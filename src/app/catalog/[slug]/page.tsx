@@ -57,9 +57,11 @@ export default function ProductPage() {
   }
 
   const handleAddToCart = () => {
-    addItem(product, product.colors[selectedColor]);
-    setAddedToCart(true);
-    setTimeout(() => setAddedToCart(false), 2000);
+    if (product?.colors?.length > 0) {
+      addItem(product, product.colors[selectedColor]);
+      setAddedToCart(true);
+      setTimeout(() => setAddedToCart(false), 2000);
+    }
   };
 
   return (
@@ -168,44 +170,48 @@ export default function ProductPage() {
               </div>
 
               {/* Color selection */}
-              <div className="mb-6">
-                <p className="text-sm font-medium mb-3">
-                  Цвет: <span className="text-muted-foreground">{getLangText(product.colors[selectedColor].name as any, language)}</span>
-                </p>
-                <div className="flex gap-2">
-                  {product.colors.map((color, i) => (
-                    <button
-                      key={color.hex}
-                      onClick={() => setSelectedColor(i)}
-                      className={cn(
-                        'w-10 h-10 rounded-full border-2 transition-all flex items-center justify-center',
-                        selectedColor === i ? 'border-vizhu-purple scale-110' : 'border-border hover:scale-105'
-                      )}
-                      style={{ backgroundColor: color.hex }}
-                      title={getLangText(color.name as any, language)}
-                    >
-                      {selectedColor === i && (
-                        <Check size={16} className="text-white drop-shadow-md" />
-                      )}
-                    </button>
-                  ))}
+              {product.colors && product.colors.length > 0 && (
+                <div className="mb-6">
+                  <p className="text-sm font-medium mb-3">
+                    Цвет: <span className="text-muted-foreground">{getLangText(product.colors[selectedColor].name as any, language)}</span>
+                  </p>
+                  <div className="flex gap-2">
+                    {product.colors.map((color, i) => (
+                      <button
+                        key={color.hex}
+                        onClick={() => setSelectedColor(i)}
+                        className={cn(
+                          'w-10 h-10 rounded-full border-2 transition-all flex items-center justify-center',
+                          selectedColor === i ? 'border-vizhu-purple scale-110' : 'border-border hover:scale-105'
+                        )}
+                        style={{ backgroundColor: color.hex }}
+                        title={getLangText(color.name as any, language)}
+                      >
+                        {selectedColor === i && (
+                          <Check size={16} className="text-white drop-shadow-md" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Description */}
               <p className="text-foreground/80 leading-relaxed mb-6">{getLangText(product.description, language)}</p>
 
               {/* Features */}
-              <div className="flex flex-wrap gap-2 mb-8">
-                {product.features.map((feature) => (
-                  <span
-                    key={getLangText(feature, language)}
-                    className="px-3 py-1.5 bg-secondary rounded-full text-xs font-medium"
-                  >
-                    {getLangText(feature, language)}
-                  </span>
-                ))}
-              </div>
+              {product.features && product.features.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-8">
+                  {product.features.map((feature, i) => (
+                    <span
+                      key={i}
+                      className="px-3 py-1.5 bg-secondary rounded-full text-xs font-medium"
+                    >
+                      {getLangText(feature as any, language)}
+                    </span>
+                  ))}
+                </div>
+              )}
 
               {/* Action buttons */}
               <div className="flex gap-3 mb-8">

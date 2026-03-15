@@ -111,21 +111,23 @@ export default function MobileProductDetailView({
       <div className="px-6 mb-10 grid grid-cols-2 gap-6">
         <div>
            <label className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-bold mb-4 block">{t.colors}</label>
-           <div className="flex gap-3">
-             {product.colors.map((color, i) => (
-               <button
-                 key={i}
-                 onClick={() => setSelectedColor(i)}
-                 className={cn(
-                   "w-8 h-8 rounded-full border-2 transition-all p-0.5",
-                   selectedColor === i ? "border-vizhu-purple" : "border-transparent"
-                 )}
-                 title={getLangText(color.name, language)}
-               >
-                 <div className="w-full h-full rounded-full border border-black/5" style={{ backgroundColor: color.hex }} />
-               </button>
-             ))}
-           </div>
+                          {product.colors && product.colors.length > 0 && (
+                            <div className="flex gap-3">
+                              {product.colors.map((color, i) => (
+                                <button
+                                  key={color.hex}
+                                  onClick={() => setSelectedColor(i)}
+                                  className={cn(
+                                    "w-12 h-12 rounded-2xl border-2 transition-all flex items-center justify-center",
+                                    selectedColor === i ? "border-vizhu-purple scale-110" : "border-border"
+                                  )}
+                                  style={{ backgroundColor: color.hex }}
+                                >
+                                  {selectedColor === i && <Check size={20} className="text-white drop-shadow-md" />}
+                                </button>
+                              ))}
+                            </div>
+                          )}
         </div>
         <div>
            <label className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-bold mb-4 block">{t.lensType}</label>
@@ -161,14 +163,15 @@ export default function MobileProductDetailView({
           <p className="text-muted-foreground text-sm leading-relaxed font-light">
              {getLangText(product.description, language)}
           </p>
-          <ul className="grid grid-cols-2 gap-3">
-             {product.features.map((feature, i) => (
-               <li key={i} className="flex items-center gap-2 text-[10px] uppercase tracking-wider font-bold text-muted-foreground">
-                 <span className="w-1 h-1 bg-vizhu-orange rounded-full" />
-                 {getLangText(feature, language)}
-               </li>
-             ))}
-          </ul>
+                        {product.features && product.features.length > 0 && (
+                          <div className="flex flex-wrap gap-2">
+                            {product.features.map((feature, i) => (
+                              <span key={i} className="px-3 py-1.5 bg-secondary rounded-xl text-[10px] font-bold uppercase tracking-wider">
+                                {getLangText(feature as any, language)}
+                              </span>
+                            ))}
+                          </div>
+                        )}
         </div>
       </div>
 
