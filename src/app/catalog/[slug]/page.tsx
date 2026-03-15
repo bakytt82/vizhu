@@ -11,6 +11,7 @@ import { formatPrice, cn, getLangText } from '@/lib/utils';
 import { useCartStore } from '@/stores/cartStore';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguageStore } from '@/stores/languageStore';
 import { translations } from '@/lib/translations';
 import MobileProductDetailView from '@/components/shared/MobileProductDetailView';
@@ -23,6 +24,7 @@ export default function ProductPage() {
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedColor, setSelectedColor] = useState(0);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [addedToCart, setAddedToCart] = useState(false);
   const addItem = useCartStore((s) => s.addItem);
 
@@ -81,16 +83,48 @@ export default function ProductPage() {
           </div>
 
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
-            {/* Image gallery */}
             <div>
-              <div className="bg-secondary/50 rounded-2xl aspect-square flex items-center justify-center relative overflow-hidden p-0">
-                {product.images?.[0] ? (
-                  <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
-                ) : (
-                  <div className="text-[10rem]">👓</div>
-                )}
+              <div className="bg-secondary/50 rounded-2xl aspect-square relative overflow-hidden group">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeImageIndex}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.3 }}
+                    className="w-full h-full"
+                  >
+                    {product.images?.[activeImageIndex] ? (
+                      <img 
+                        src={product.images[activeImageIndex]} 
+                        alt={product.name} 
+                        className="w-full h-full object-cover" 
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-[10rem]">👓</div>
+                    )}
+                  </motion.div>
+                </AnimatePresence>
                 
                 <ProductWatermark size="lg" className="top-6 left-6" />
+
+                {/* Navigation Arrows */}
+                {product.images && product.images.length > 1 && (
+                  <>
+                    <button
+                      onClick={() => setActiveImageIndex((prev) => (prev > 0 ? prev - 1 : product.images.length - 1))}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/40 z-20"
+                    >
+                      <ChevronLeft size={24} />
+                    </button>
+                    <button
+                      onClick={() => setActiveImageIndex((prev) => (prev < product.images.length - 1 ? prev + 1 : 0))}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-white/40 z-20"
+                    >
+                      <ChevronLeft size={24} className="rotate-180" />
+                    </button>
+                  </>
+                )}
 
                 {/* Badges */}
                 <div className="absolute top-24 left-6 flex flex-col gap-2 z-10">
@@ -107,20 +141,21 @@ export default function ProductPage() {
                 </div>
 
                 {/* Try-on button */}
-                <button className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 px-6 py-3 bg-vizhu-purple text-white rounded-xl font-medium hover:bg-vizhu-purple-dark transition-colors shadow-lg">
+                <button className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 px-6 py-3 bg-vizhu-purple text-white rounded-xl font-medium hover:bg-vizhu-purple-dark transition-colors shadow-lg z-10">
                   <Eye size={18} />
                   Примерить
                 </button>
               </div>
 
-              {/* Color swatches under image */}
+              {/* Thumbnail gallery */}
               <div className="flex gap-3 mt-4 justify-center overflow-x-auto p-1">
                 {product.images?.map((img, i) => (
                   <button
                     key={i}
+                    onClick={() => setActiveImageIndex(i)}
                     className={cn(
                       'w-20 h-20 rounded-xl bg-secondary/50 flex items-center justify-center border-2 transition-all overflow-hidden shrink-0',
-                      i === 0 ? 'border-vizhu-purple' : 'border-transparent hover:border-border'
+                      i === activeImageIndex ? 'border-vizhu-purple scale-105 shadow-md' : 'border-transparent hover:border-border opacity-70 hover:opacity-100'
                     )}
                   >
                     <img src={img} alt={`${product.name} ${i}`} className="w-full h-full object-cover" />

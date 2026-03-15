@@ -23,6 +23,7 @@ export default function MobileProductDetailView({
   const { language } = useLanguageStore();
   const t = translations[language];
   const [selectedColor, setSelectedColor] = useState(0);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [selectedLens, setSelectedLens] = useState('Neutral');
 
   const lensOptions = [
@@ -48,18 +49,44 @@ export default function MobileProductDetailView({
         </div>
       </header>
 
-      {/* Main Image & Try-on */}
-      <div className="px-6 mb-4">
-        <div className="aspect-square bg-secondary rounded-4xl flex items-center justify-center relative overflow-hidden group">
+      <div className="px-6 mb-4 relative">
+        <div 
+          className="aspect-square bg-secondary rounded-4xl flex overflow-x-auto snap-x snap-mandatory no-scrollbar relative"
+          onScroll={(e) => {
+            const scrollLeft = (e.target as HTMLDivElement).scrollLeft;
+            const width = (e.target as HTMLDivElement).offsetWidth;
+            const index = Math.round(scrollLeft / width);
+            if (index !== activeImageIndex) setActiveImageIndex(index);
+          }}
+        >
+          {product.images.map((img, i) => (
+            <div key={i} className="w-full h-full shrink-0 snap-center flex items-center justify-center relative">
+              <img
+                src={img}
+                alt={`${product.name} ${i}`}
+                className="w-full h-full object-cover transition-transform duration-500"
+              />
+            </div>
+          ))}
+
           <ProductWatermark size="md" className="top-6 left-6" />
-          <img
-            src={product.images[0]}
-            alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-          />
-          <button className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-foreground text-background px-8 py-4 rounded-2xl flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest shadow-2xl active:scale-95 transition-transform">
+          
+          <button className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-foreground text-background px-8 py-4 rounded-2xl flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest shadow-2xl active:scale-95 transition-transform z-10">
              <Eye size={18} /> {t.seeItOnYou}
           </button>
+        </div>
+
+        {/* Dash Indicators */}
+        <div className="absolute bottom-10 right-12 flex gap-1.5 z-10">
+          {product.images.map((_, i) => (
+            <div 
+              key={i} 
+              className={cn(
+                "h-1 rounded-full transition-all",
+                i === activeImageIndex ? "w-6 bg-vizhu-purple" : "w-2 bg-foreground/20"
+              )} 
+            />
+          ))}
         </div>
       </div>
 
@@ -67,12 +94,21 @@ export default function MobileProductDetailView({
         {product.images.map((img, i) => (
           <button 
             key={i} 
+            onClick={() => {
+              const gallery = document.querySelector('.snap-x');
+              if (gallery) {
+                gallery.scrollTo({
+                  left: i * (gallery as HTMLElement).offsetWidth,
+                  behavior: 'smooth'
+                });
+              }
+            }}
             className={cn(
               "w-20 h-16 rounded-2xl shrink-0 flex items-center justify-center border transition-all overflow-hidden p-0",
-              i === 0 ? "bg-secondary border-vizhu-purple/30" : "bg-transparent border-border/50"
+              i === activeImageIndex ? "bg-secondary border-vizhu-purple/30" : "bg-transparent border-border/50"
             )}
           >
-          <img src={img} alt="" className="w-full h-full object-cover opacity-60" />
+            <img src={img} alt="" className="w-full h-full object-cover opacity-60" />
           </button>
         ))}
       </div>
