@@ -190,7 +190,7 @@ export default function AdminPage() {
           <table className="w-full text-left text-sm whitespace-nowrap">
             <thead className="bg-muted/50 text-muted-foreground">
               <tr>
-                <th className="px-6 py-4 font-medium w-24">Фото</th>
+                <th className="sticky left-0 z-20 bg-muted/90 backdrop-blur-sm px-6 py-4 font-medium w-24 border-r border-border/50 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">Фото</th>
                 <th className="px-6 py-4 font-medium">Модель</th>
                 <th className="px-6 py-4 font-medium">Категория</th>
                 <th className="px-6 py-4 font-medium">Цена</th>
@@ -203,14 +203,14 @@ export default function AdminPage() {
             <tbody className="divide-y divide-border/50">
               {products.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-12 text-center text-muted-foreground">
+                  <td colSpan={8} className="px-6 py-12 text-center text-muted-foreground">
                     Нет добавленных товаров
                   </td>
                 </tr>
               ) : (
                 products.map((p) => (
                   <tr key={p.id} className="hover:bg-muted/30 transition-colors border-b border-border/10 last:border-0">
-                    <td className="px-6 py-4">
+                    <td className="sticky left-0 z-10 bg-card px-6 py-4 border-r border-border/10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">
                       <div className="w-16 h-16 bg-secondary rounded-2xl relative overflow-hidden shrink-0 shadow-sm border border-border/20">
                         {p.images?.[0] ? (
                           <img src={p.images[0]} alt={p.name} className="absolute inset-0 w-full h-full object-cover" />
