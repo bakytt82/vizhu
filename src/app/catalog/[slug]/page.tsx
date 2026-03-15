@@ -9,6 +9,7 @@ import { getProductBySlug } from '@/lib/db';
 import { Product } from '@/types';
 import { formatPrice, cn, getLangText } from '@/lib/utils';
 import { useCartStore } from '@/stores/cartStore';
+import { useWishlistStore } from '@/stores/wishlistStore';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -27,6 +28,7 @@ export default function ProductPage() {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [addedToCart, setAddedToCart] = useState(false);
   const addItem = useCartStore((s) => s.addItem);
+  const { toggleWishlist, isInWishlist } = useWishlistStore();
 
   useEffect(() => {
     if (params.slug) {
@@ -272,8 +274,9 @@ export default function ProductPage() {
                   variant="outline"
                   size="icon"
                   className="h-14 w-14 rounded-xl"
+                  onClick={() => product && toggleWishlist(product)}
                 >
-                  <Heart size={20} />
+                  <Heart size={20} className={cn(isInWishlist(product.id) && "fill-rose-500 text-rose-500")} />
                 </Button>
               </div>
 

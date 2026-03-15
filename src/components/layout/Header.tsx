@@ -4,8 +4,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { ShoppingBag, Search, Menu, X, Sun, Moon, MessageCircle } from 'lucide-react';
+import { ShoppingBag, Search, Menu, X, Sun, Moon, MessageCircle, Heart } from 'lucide-react';
 import { useCartStore } from '@/stores/cartStore';
+import { useWishlistStore } from '@/stores/wishlistStore';
 import { useThemeStore } from '@/stores/themeStore';
 import { NAV_LINKS, SITE_CONFIG } from '@/lib/constants';
 import { cn } from '@/lib/utils';
@@ -21,6 +22,7 @@ export default function Header() {
   const { language, setLanguage } = useLanguageStore();
   const t = translations[language];
   const itemCount = useCartStore((s) => s.getItemCount());
+  const wishlistCount = useWishlistStore((s) => s.getItemCount());
 
   useEffect(() => {
     setIsMounted(true);
@@ -110,6 +112,15 @@ export default function Header() {
                 aria-label="Поиск"
               >
                 <Search size={20} strokeWidth={1.5} />
+              </Link>
+
+              <Link href="/wishlist" className="relative p-2 hover:opacity-60 transition-opacity">
+                <Heart size={20} strokeWidth={1.5} />
+                {isMounted && wishlistCount > 0 && (
+                  <span className="absolute top-1 right-1 bg-vizhu-purple text-white text-[8px] w-3.5 h-3.5 flex items-center justify-center rounded-full font-bold">
+                    {wishlistCount}
+                  </span>
+                )}
               </Link>
 
               <Link href="/cart" className="relative p-2 hover:opacity-60 transition-opacity">

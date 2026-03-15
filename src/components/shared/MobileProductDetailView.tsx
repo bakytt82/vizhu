@@ -6,6 +6,7 @@ import { formatPrice, cn, getLangText } from '@/lib/utils';
 import { useState } from 'react';
 import Link from 'next/link';
 import { useLanguageStore } from '@/stores/languageStore';
+import { useWishlistStore } from '@/stores/wishlistStore';
 import { translations } from '@/lib/translations';
 import ProductWatermark from '@/components/shared/ProductWatermark';
 
@@ -25,6 +26,7 @@ export default function MobileProductDetailView({
   const [selectedColor, setSelectedColor] = useState(0);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [selectedLens, setSelectedLens] = useState('Neutral');
+  const { toggleWishlist, isInWishlist } = useWishlistStore();
 
   const lensOptions = [
     { value: 'Neutral', label: t.lensesNeutral },
@@ -128,8 +130,11 @@ export default function MobileProductDetailView({
             </div>
             <p className="text-muted-foreground text-[10px] mt-2 font-medium uppercase tracking-wider">{t.withNaturalLenses}</p>
           </div>
-          <button className="w-12 h-12 flex items-center justify-center bg-card border border-border rounded-2xl text-muted-foreground hover:text-rose-500 transition-colors">
-             <Heart size={20} />
+          <button 
+            onClick={() => toggleWishlist(product)}
+            className="w-12 h-12 flex items-center justify-center bg-card border border-border rounded-2xl text-muted-foreground hover:text-rose-500 transition-colors"
+          >
+             <Heart size={20} className={cn(isInWishlist(product.id) && "fill-rose-500 text-rose-500")} />
           </button>
         </div>
 

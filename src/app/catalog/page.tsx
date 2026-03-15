@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { CATEGORIES } from '@/lib/constants';
 import { useLanguageStore } from '@/stores/languageStore';
+import { useWishlistStore } from '@/stores/wishlistStore';
 import { translations } from '@/lib/translations';
 import ProductWatermark from '@/components/shared/ProductWatermark';
 
@@ -21,6 +22,7 @@ export default function CatalogPage() {
   const [sortBy, setSortBy] = useState('popular');
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { toggleWishlist, isInWishlist } = useWishlistStore();
 
   useEffect(() => {
     getProducts().then((data) => {
@@ -164,11 +166,20 @@ export default function CatalogPage() {
                       {t.catalog_try_on}
                     </button>
                     <button
-                      onClick={(e) => { e.preventDefault(); }}
-                      className="w-10 h-10 bg-white dark:bg-card/80 backdrop-blur-md rounded-xl flex items-center justify-center hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors border border-border"
-                    >
-                      <Heart size={16} className="text-muted-foreground hover:text-rose-500 transition-colors" />
-                    </button>
+                       onClick={(e) => { 
+                         e.preventDefault(); 
+                         toggleWishlist(product);
+                       }}
+                       className="w-10 h-10 bg-white dark:bg-card/80 backdrop-blur-md rounded-xl flex items-center justify-center hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors border border-border"
+                     >
+                       <Heart 
+                         size={16} 
+                         className={cn(
+                           "transition-colors",
+                           isInWishlist(product.id) ? "fill-rose-500 text-rose-500" : "text-muted-foreground hover:text-rose-500"
+                         )} 
+                       />
+                     </button>
                   </div>
                 </div>
 
