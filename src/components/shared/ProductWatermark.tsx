@@ -18,7 +18,6 @@ export default function ProductWatermark({ className, size = 'md' }: ProductWate
     <div 
       className={cn(
         "absolute top-4 left-4 z-10 flex items-center justify-center overflow-hidden",
-        "bg-white/10 backdrop-blur-md border border-white/20 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)]",
         sizeClasses[size],
         className
       )}
@@ -26,7 +25,7 @@ export default function ProductWatermark({ className, size = 'md' }: ProductWate
       <img
         src="/logo2.png"
         alt="Vizhu Logo"
-        className="w-full h-full object-contain brightness-0 invert opacity-90 select-none pointer-events-none"
+        className="w-full h-full object-contain filter-purple opacity-90 select-none pointer-events-none"
       />
     </div>
   );
