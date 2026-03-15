@@ -55,7 +55,7 @@ export default function MobileProductDetailView({
           <img
             src={product.images[0]}
             alt={product.name}
-            className="w-full h-full object-cover mix-blend-multiply transition-transform duration-500 group-hover:scale-110"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           />
           <button className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-foreground text-background px-8 py-4 rounded-2xl flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest shadow-2xl active:scale-95 transition-transform">
              <Eye size={18} /> {t.seeItOnYou}
@@ -72,7 +72,7 @@ export default function MobileProductDetailView({
               i === 0 ? "bg-secondary border-vizhu-purple/30" : "bg-transparent border-border/50"
             )}
           >
-            <img src={img} alt="" className="w-full h-full object-cover mix-blend-multiply opacity-60" />
+          <img src={img} alt="" className="w-full h-full object-cover opacity-60" />
           </button>
         ))}
       </div>
