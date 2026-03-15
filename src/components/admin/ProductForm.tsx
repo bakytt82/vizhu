@@ -34,6 +34,7 @@ export default function ProductForm({
   const [material, setMaterial] = useState(initialData?.material || 'Пластик');
   const [frameType, setFrameType] = useState(initialData?.frameType || 'Ободковая');
   const [inStock, setInStock] = useState(initialData?.in_stock ?? true);
+  const [quantity, setQuantity] = useState(initialData?.quantity?.toString() || '0');
   
   const [colors, setColors] = useState<ColorOption[]>(initialData?.colors || []);
   const [images, setImages] = useState<string[]>(initialData?.images || []);
@@ -109,6 +110,7 @@ export default function ProductForm({
         material,
         frame_type: frameType,
         in_stock: inStock,
+        quantity: parseInt(quantity) || 0,
         colors,
         images,
         slug: initialData?.slug || name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''),
@@ -200,6 +202,18 @@ export default function ProductForm({
               <option value="Компьютерные очки">Компьютерные очки</option>
               <option value="Детские очки">Детские очки</option>
             </select>
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Количество в наличии <span className="text-red-500">*</span></label>
+            <input
+              required
+              type="number"
+              min="0"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+              className="w-full bg-muted border-0 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-vizhu-purple/20"
+              placeholder="10"
+            />
           </div>
         </div>
 

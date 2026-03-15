@@ -192,66 +192,93 @@ export default function AdminPage() {
               <tr>
                 <th className="px-6 py-4 font-medium">Товар</th>
                 <th className="px-6 py-4 font-medium">Категория</th>
-                <th className="px-6 py-4 font-medium">Цена</th>
-                <th className="px-6 py-4 font-medium">Статус</th>
-                <th className="px-6 py-4 font-medium text-right">Действия</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border/50">
-              {products.length === 0 ? (
+                <th class               {products.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-12 text-center text-muted-foreground">
+                  <td colSpan={8} className="px-6 py-12 text-center text-muted-foreground">
                     Нет добавленных товаров
                   </td>
                 </tr>
               ) : (
                 products.map((p) => (
-                  <tr key={p.id} className="hover:bg-muted/30 transition-colors">
+                  <tr key={p.id} className="hover:bg-muted/30 transition-colors border-b border-border/10 last:border-0">
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 bg-muted rounded-xl relative overflow-hidden flex-shrink-0">
+                      <div className="flex items-center gap-4">
+                        <div className="w-16 h-16 bg-secondary rounded-2xl relative overflow-hidden shrink-0 shadow-sm border border-border/20">
                           {p.images?.[0] ? (
-                            <Image src={p.images[0]} alt={p.name} fill className="object-cover" />
+                            <img src={p.images[0]} alt={p.name} className="absolute inset-0 w-full h-full object-cover" />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                              <Eye size={16} />
+                            <div className="w-full h-full flex items-center justify-center text-muted-foreground bg-muted">
+                              <Eye size={20} />
                             </div>
                           )}
                         </div>
-                        <div>
-                          <div className="font-medium text-foreground">{p.name}</div>
-                          <div className="text-xs text-muted-foreground">{p.brand}</div>
+                        <div className="flex flex-col">
+                          <span className="font-bold text-foreground text-base tracking-tight">{p.name}</span>
+                          <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest opacity-60">
+                            {p.brand}
+                          </span>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-muted text-xs">
-                        <Tag size={12} />
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-secondary/50 text-[10px] font-bold uppercase tracking-wider text-muted-foreground border border-border/20">
+                        <Tag size={12} className="text-vizhu-orange" />
                         {p.category}
                       </div>
                     </td>
-                    <td className="px-6 py-4 font-medium">{p.price.toLocaleString()} сом</td>
+                    <td className="px-6 py-4">
+                      <span className="font-bold text-base text-foreground">
+                        {p.price.toLocaleString()} <span className="text-xs font-normal text-muted-foreground">сом</span>
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col">
+                        <span className="font-bold text-sm">{p.quantity || 0}</span>
+                        <span className="text-[9px] text-muted-foreground uppercase font-bold tracking-tighter">шт. в наличии</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col">
+                        <span className="text-xs font-medium text-foreground">
+                          {new Date(p.created_at).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                        </span>
+                        <span className="text-[9px] text-muted-foreground uppercase font-bold tracking-tighter">
+                          {new Date(p.created_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+                    </td>
                     <td className="px-6 py-4">
                       <span className={cn(
-                        "px-2.5 py-1 rounded-full text-xs font-medium",
-                        p.in_stock ? "bg-green-500/10 text-green-500" : "bg-red-500/10 text-red-500"
+                        "inline-flex items-center px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm",
+                        p.in_stock ? "bg-green-500/10 text-green-600 border border-green-500/20" : "bg-red-500/10 text-red-600 border border-red-500/20"
                       )}>
                         {p.in_stock ? 'В наличии' : 'Нет в наличии'}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-3">
+                      <div className="flex items-center justify-end gap-2">
                         <button 
                           onClick={() => {
                             setCurrentProduct(p);
                             setIsEditing(true);
                           }}
-                          className="text-vizhu-purple hover:underline text-xs font-medium"
+                          className="bg-card hover:bg-secondary text-vizhu-purple p-2 rounded-xl border border-border/50 transition-all shadow-sm hover:scale-105 active:scale-95"
+                          title="Редактировать"
                         >
-                          Редактировать
+                          <span className="text-[10px] font-bold uppercase tracking-wider px-1">Редактировать</span>
                         </button>
                         <button 
                           onClick={() => handleDelete(p.id, p.name)}
+                          className="bg-card hover:bg-red-50 text-red-500 p-2 rounded-xl border border-border/50 transition-all shadow-sm hover:scale-105 active:scale-95"
+                          title="Удалить"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}                   onClick={() => handleDelete(p.id, p.name)}
                           className="text-red-500 hover:text-red-600 p-1"
                         >
                           <Trash2 size={16} />
