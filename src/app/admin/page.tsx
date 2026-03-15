@@ -60,7 +60,7 @@ export default function AdminPage() {
       email,
       password,
     });
-    if (error) setAuthError('Неверный логин или пароль');
+    if (error) setAuthError(error.message === 'Invalid login credentials' ? 'Неверный логин или пароль' : error.message);
     setLoading(false);
   };
 
