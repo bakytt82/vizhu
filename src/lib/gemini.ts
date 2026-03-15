@@ -1,7 +1,12 @@
 import { GoogleGenAI } from '@google/genai';
 import { products } from '@/data/products';
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
+const getAI = () => {
+  if (!process.env.GEMINI_API_KEY) {
+    console.warn("⚠️ У ВАС НЕ УКАЗАН GEMINI_API_KEY В ПЕРЕМЕННЫХ ОКРУЖЕНИЯ!");
+  }
+  return new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
+};
 
 const productContext = products.map(p => `- ${p.name} (${p.brand}): ${p.price} сом, стиль ${p.shape}, материал ${p.material}, категория ${p.category}`).join('\n');
 
@@ -44,7 +49,7 @@ export const TOOLS: any = [
 
 export async function chatWithGemini(userMessage: string, history: { role: string; content: string }[]) {
   try {
-    const chat = ai.chats.create({
+    const chat = getAI().chats.create({
       model: 'gemini-1.5-flash',
       config: {
         systemInstruction: SYSTEM_PROMPT,
@@ -71,7 +76,7 @@ export async function chatWithGemini(userMessage: string, history: { role: strin
 
 export async function chatWithGeminiStream(userMessage: string, history: { role: string; content: string }[]) {
   try {
-    const chat = ai.chats.create({
+    const chat = getAI().chats.create({
       model: 'gemini-1.5-flash',
       config: {
         systemInstruction: SYSTEM_PROMPT,
@@ -101,7 +106,7 @@ export async function chatWithGeminiVision(
   history: { role: string; content: string }[]
 ) {
   try {
-    const chat = ai.chats.create({
+    const chat = getAI().chats.create({
       model: 'gemini-1.5-flash',
       config: {
         systemInstruction: SYSTEM_PROMPT,
@@ -131,7 +136,7 @@ export async function chatWithGeminiVision(
 export async function parsePrescription(imageBase64: string, mimeType: string) {
   try {
     const prompt = 'Проанализируй фото рецепта. Верни JSON с полями od, os (sphere, cylinder, axis, add) и pd.';
-    const chat = ai.chats.create({
+    const chat = getAI().chats.create({
       model: 'gemini-1.5-flash',
       config: { maxOutputTokens: 512, temperature: 0.2 },
     });
@@ -155,7 +160,7 @@ export async function parsePrescription(imageBase64: string, mimeType: string) {
 export async function getQuizRecommendations(answers: Record<string, string>) {
   try {
     const prompt = `Подбери 3-5 оправ. Параметры: ${JSON.stringify(answers)}. Ассортимент: ${productContext}`;
-    const chat = ai.chats.create({
+    const chat = getAI().chats.create({
       model: 'gemini-1.5-flash',
       config: {
         systemInstruction: 'Ты — эксперт-оптик. Помоги подобрать очки.',

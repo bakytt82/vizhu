@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { chatWithGemini, chatWithGeminiStream, chatWithGeminiVision, parsePrescription } from '@/lib/gemini';
 
+export const dynamic = 'force-dynamic';
+export const maxDuration = 60; // Vercel hobby plan max is 10s for functions, or 60s for pro. We can set it to 60. Actually, Pro is 300. 60 is safe.
+
 export async function POST(req: NextRequest) {
   try {
     const { message, history, image, mimeType, mode } = await req.json();
