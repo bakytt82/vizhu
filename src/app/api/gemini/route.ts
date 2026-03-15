@@ -1,8 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { chatWithGemini, chatWithGeminiStream, chatWithGeminiVision, parsePrescription } from '@/lib/gemini';
+import { GoogleGenAI } from '@google/genai';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60; // Vercel hobby plan max is 10s for functions, or 60s for pro. We can set it to 60. Actually, Pro is 300. 60 is safe.
+
+export async function GET() {
+  try {
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
+    const response = await ai.models.list();
+    const models = [];
+    for await (const m of response) {
+      models.push(m.name);
+    }
+    return NextResponse.json({ models });
+  } catch (e: any) {
+    return NextResponse.json({ error: String(e) }, { status: e.status || 500 });
+  }
+}
 
 export async function POST(req: NextRequest) {
   try {
