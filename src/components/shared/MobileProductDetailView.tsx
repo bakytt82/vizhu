@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronLeft, ShoppingBag, Share2, Eye, Heart, Star, MessageSquare } from 'lucide-react';
+import { ChevronLeft, ShoppingBag, Share2, Eye, Heart, Star, MessageSquare, Check } from 'lucide-react';
 import { Product } from '@/types';
 import { formatPrice, cn, getLangText } from '@/lib/utils';
 import { useState } from 'react';
@@ -63,14 +63,15 @@ export default function MobileProductDetailView({
 
       {/* Thumbnails */}
       <div className="px-6 flex gap-3 mb-8 overflow-x-auto no-scrollbar">
-        {product.images.map((img, i) => (
-          <div key={i} className={cn(
-            "w-20 h-16 rounded-2xl shrink-0 flex items-center justify-center border transition-all",
-            i === 0 ? "bg-secondary border-vizhu-purple/30" : "bg-transparent border-border/50"
-          )}>
-            <img src={img} alt="" className="w-12 h-12 object-contain mix-blend-multiply opacity-60" />
-          </div>
-        ))}
+          <button 
+            key={i} 
+            className={cn(
+              "w-20 h-16 rounded-2xl shrink-0 flex items-center justify-center border transition-all overflow-hidden p-0",
+              i === 0 ? "bg-secondary border-vizhu-purple/30" : "bg-transparent border-border/50"
+            )}
+          >
+            <img src={img} alt="" className="w-full h-full object-cover mix-blend-multiply opacity-60" />
+          </button>
       </div>
 
       {/* Product Info */}
