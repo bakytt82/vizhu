@@ -61,8 +61,8 @@ export default function MobileProductDetailView({
         </div>
       </div>
 
-      {/* Thumbnails */}
       <div className="px-6 flex gap-3 mb-8 overflow-x-auto no-scrollbar">
+        {product.images.map((img, i) => (
           <button 
             key={i} 
             className={cn(
@@ -72,6 +72,7 @@ export default function MobileProductDetailView({
           >
             <img src={img} alt="" className="w-full h-full object-cover mix-blend-multiply opacity-60" />
           </button>
+        ))}
       </div>
 
       {/* Product Info */}
