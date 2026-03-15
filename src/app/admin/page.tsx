@@ -190,11 +190,19 @@ export default function AdminPage() {
           <table className="w-full text-left text-sm whitespace-nowrap">
             <thead className="bg-muted/50 text-muted-foreground">
               <tr>
-                <th className="px-6 py-4 font-medium">Товар</th>
+                <th className="px-6 py-4 font-medium">Товар / Модель</th>
                 <th className="px-6 py-4 font-medium">Категория</th>
-                <th class               {products.length === 0 ? (
+                <th className="px-6 py-4 font-medium">Цена</th>
+                <th className="px-6 py-4 font-medium">Кол-во</th>
+                <th className="px-6 py-4 font-medium">Дата</th>
+                <th className="px-6 py-4 font-medium">Статус</th>
+                <th className="px-6 py-4 font-medium text-right">Действия</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border/50">
+              {products.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-6 py-12 text-center text-muted-foreground">
+                  <td colSpan={7} className="px-6 py-12 text-center text-muted-foreground">
                     Нет добавленных товаров
                   </td>
                 </tr>
@@ -240,10 +248,10 @@ export default function AdminPage() {
                     <td className="px-6 py-4">
                       <div className="flex flex-col">
                         <span className="text-xs font-medium text-foreground">
-                          {new Date(p.created_at).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                          {p.created_at ? new Date(p.created_at).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' }) : '-'}
                         </span>
                         <span className="text-[9px] text-muted-foreground uppercase font-bold tracking-tighter">
-                          {new Date(p.created_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
+                          {p.created_at ? new Date(p.created_at).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }) : ''}
                         </span>
                       </div>
                     </td>
@@ -278,19 +286,11 @@ export default function AdminPage() {
                     </td>
                   </tr>
                 ))
-              )}                   onClick={() => handleDelete(p.id, p.name)}
-                          className="text-red-500 hover:text-red-600 p-1"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
               )}
             </tbody>
           </table>
         </div>
+
       </div>
     </div>
   );
