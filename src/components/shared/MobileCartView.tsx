@@ -125,28 +125,32 @@ export default function MobileCartView({
       </div>
 
       {/* Sticky Bottom Summary */}
-      <div className="fixed bottom-20 left-4 right-4 p-5 bg-background/60 backdrop-blur-3xl border border-white/20 z-40 space-y-4 rounded-[32px] shadow-[0_20px_50px_rgba(0,0,0,0.15)] animate-in fade-in slide-in-from-bottom-5 duration-500">
-        <div className="flex items-end justify-between px-2">
+      <div className="fixed bottom-20 left-4 right-4 p-4 bg-background/40 backdrop-blur-2xl border border-white/20 z-40 space-y-3 rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.12)] animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="flex items-center justify-between px-1">
            <button 
             onClick={() => {
-              // Toggle select all logic
+              if (selectedItems.size === items.length) {
+                items.forEach(i => selectedItems.has(i.product.id) && toggleItem(i.product.id));
+              } else {
+                items.forEach(i => !selectedItems.has(i.product.id) && toggleItem(i.product.id));
+              }
             }}
-            className="flex items-center gap-3 active:scale-95 transition-transform pb-1"
+            className="flex items-center gap-2 active:scale-95 transition-transform"
            >
               <div className={cn(
-                "w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all",
+                "w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all",
                 selectedItems.size === items.length ? "bg-vizhu-purple border-vizhu-purple" : "border-muted-foreground/20 bg-white/5"
               )}>
                  {selectedItems.size === items.length && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
               </div>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80">{t.cart_select_all}</span>
+              <span className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground/60">{t.cart_select_all}</span>
            </button>
            
            <div className="text-right">
-              <span className="text-[10px] uppercase font-bold text-muted-foreground/40 block tracking-widest mb-0.5">{t.cart_summary}</span>
-              <div className="flex items-baseline justify-end gap-1">
-                <span className="text-3xl font-display font-bold text-vizhu-orange leading-none">{formatPrice(selectedTotal, '').trim()}</span>
-                <span className="text-xs font-bold text-vizhu-orange opacity-60 uppercase">{t.som}</span>
+              <div className="flex items-baseline justify-end gap-1.5">
+                <span className="text-[10px] uppercase font-bold text-muted-foreground/30 tracking-widest">{t.cart_summary}</span>
+                <span className="text-2xl font-display font-bold text-vizhu-orange leading-none">{formatPrice(selectedTotal, '').trim()}</span>
+                <span className="text-[10px] font-bold text-vizhu-orange opacity-50 uppercase">{t.som}</span>
               </div>
            </div>
         </div>
@@ -154,10 +158,10 @@ export default function MobileCartView({
         <Link 
           href="/checkout"
           className={cn(
-            "w-full h-14 rounded-[22px] flex items-center justify-center text-[10px] font-bold uppercase tracking-[0.3em] transition-all shadow-xl active:scale-95",
+            "w-full h-12 rounded-2xl flex items-center justify-center text-[9px] font-bold uppercase tracking-[0.25em] transition-all shadow-lg active:scale-95",
             selectedItems.size === 0 
-              ? "bg-muted text-muted-foreground opacity-50 pointer-events-none" 
-              : "bg-vizhu-purple text-white shadow-vizhu-purple/40"
+              ? "bg-muted text-muted-foreground opacity-40 pointer-events-none" 
+              : "bg-vizhu-purple text-white shadow-vizhu-purple/30"
           )}
         >
           {t.cart_checkout} — {selectedItems.size}
