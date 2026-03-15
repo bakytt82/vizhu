@@ -50,7 +50,7 @@ export const TOOLS: any = [
 export async function chatWithGemini(userMessage: string, history: { role: string; content: string }[]) {
   try {
     const chat = getAI().chats.create({
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.5-flash',
       config: {
         systemInstruction: SYSTEM_PROMPT,
         maxOutputTokens: 1024,
@@ -77,7 +77,7 @@ export async function chatWithGemini(userMessage: string, history: { role: strin
 export async function chatWithGeminiStream(userMessage: string, history: { role: string; content: string }[]) {
   try {
     const chat = getAI().chats.create({
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.5-flash',
       config: {
         systemInstruction: SYSTEM_PROMPT,
         maxOutputTokens: 1024,
@@ -107,7 +107,7 @@ export async function chatWithGeminiVision(
 ) {
   try {
     const chat = getAI().chats.create({
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.5-flash',
       config: {
         systemInstruction: SYSTEM_PROMPT,
         maxOutputTokens: 1500,
@@ -137,7 +137,7 @@ export async function parsePrescription(imageBase64: string, mimeType: string) {
   try {
     const prompt = 'Проанализируй фото рецепта. Верни JSON с полями od, os (sphere, cylinder, axis, add) и pd.';
     const chat = getAI().chats.create({
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.5-flash',
       config: { maxOutputTokens: 512, temperature: 0.2 },
     });
 
@@ -161,7 +161,7 @@ export async function getQuizRecommendations(answers: Record<string, string>) {
   try {
     const prompt = `Подбери 3-5 оправ. Параметры: ${JSON.stringify(answers)}. Ассортимент: ${productContext}`;
     const chat = getAI().chats.create({
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.5-flash',
       config: {
         systemInstruction: 'Ты — эксперт-оптик. Помоги подобрать очки.',
         maxOutputTokens: 1024,
