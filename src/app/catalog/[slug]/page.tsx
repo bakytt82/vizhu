@@ -62,11 +62,12 @@ export default function ProductPage() {
   }
 
   const handleAddToCart = () => {
-    if (product?.colors?.length > 0) {
-      addItem(product, product.colors[selectedColor]);
-      setAddedToCart(true);
-      setTimeout(() => setAddedToCart(false), 2000);
-    }
+    const defaultColor = { name: { ru: 'Стандарт', kg: 'Стандарт', en: 'Standard' }, hex: '#000000' };
+    const colorToUse = (product?.colors && product.colors.length > 0) ? product.colors[selectedColor] : defaultColor;
+    
+    addItem(product!, colorToUse);
+    setAddedToCart(true);
+    setTimeout(() => setAddedToCart(false), 2000);
   };
 
   return (
