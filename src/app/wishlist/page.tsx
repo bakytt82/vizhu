@@ -105,9 +105,9 @@ export default function WishlistPage() {
                       </div>
                       <button 
                         onClick={() => {
-                          if (product.colors && product.colors.length > 0) {
-                            addItem(product, product.colors[0]);
-                          }
+                          const defaultColor = { name: { ru: 'Стандарт', kg: 'Стандарт', en: 'Standard' }, hex: '#000000' };
+                          const colorToUse = (product.colors && product.colors.length > 0) ? product.colors[0] : defaultColor;
+                          addItem(product, colorToUse);
                         }}
                         className="w-12 h-12 bg-vizhu-purple text-white rounded-2xl flex items-center justify-center shadow-lg shadow-vizhu-purple/20 hover:bg-vizhu-purple-dark hover:scale-110 active:scale-95 transition-all"
                       >

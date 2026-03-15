@@ -93,9 +93,9 @@ export default function MobileWishlistView({
                       <span className="text-lg font-display font-bold text-vizhu-orange">{formatPrice(product.price, t.som)}</span>
                       <button 
                         onClick={() => {
-                          if (product.colors && product.colors.length > 0) {
-                            addItem(product, product.colors[0]);
-                          }
+                          const defaultColor = { name: { ru: 'Стандарт', kg: 'Стандарт', en: 'Standard' }, hex: '#000000' };
+                          const colorToUse = (product.colors && product.colors.length > 0) ? product.colors[0] : defaultColor;
+                          addItem(product, colorToUse);
                         }}
                         className="w-10 h-10 bg-vizhu-purple text-white rounded-xl flex items-center justify-center shadow-lg shadow-vizhu-purple/20 active:scale-90 transition-transform"
                       >
