@@ -80,9 +80,9 @@ export default function ProductPage() {
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
             {/* Image gallery */}
             <div>
-              <div className="bg-secondary/50 rounded-2xl aspect-square flex items-center justify-center relative overflow-hidden p-4">
+              <div className="bg-secondary/50 rounded-2xl aspect-square flex items-center justify-center relative overflow-hidden p-0">
                 {product.images?.[0] ? (
-                  <img src={product.images[0]} alt={product.name} className="w-full h-full object-contain" />
+                  <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
                 ) : (
                   <div className="text-[10rem]">👓</div>
                 )}
