@@ -50,24 +50,26 @@ export default function MobileProductDetailView({
       </header>
 
       <div className="px-6 mb-4 relative">
-        <div 
-          className="aspect-square bg-secondary rounded-4xl flex overflow-x-auto snap-x snap-mandatory no-scrollbar relative"
-          onScroll={(e) => {
-            const scrollLeft = (e.target as HTMLDivElement).scrollLeft;
-            const width = (e.target as HTMLDivElement).offsetWidth;
-            const index = Math.round(scrollLeft / width);
-            if (index !== activeImageIndex) setActiveImageIndex(index);
-          }}
-        >
-          {product.images.map((img, i) => (
-            <div key={i} className="w-full h-full shrink-0 snap-center flex items-center justify-center relative">
-              <img
-                src={img}
-                alt={`${product.name} ${i}`}
-                className="w-full h-full object-cover transition-transform duration-500"
-              />
-            </div>
-          ))}
+        <div className="aspect-square bg-secondary rounded-4xl relative overflow-hidden group">
+          <div 
+            className="w-full h-full flex overflow-x-auto snap-x snap-mandatory no-scrollbar relative"
+            onScroll={(e) => {
+              const scrollLeft = (e.target as HTMLDivElement).scrollLeft;
+              const width = (e.target as HTMLDivElement).offsetWidth;
+              const index = Math.round(scrollLeft / width);
+              if (index !== activeImageIndex) setActiveImageIndex(index);
+            }}
+          >
+            {product.images.map((img, i) => (
+              <div key={i} className="w-full h-full shrink-0 snap-center flex items-center justify-center relative">
+                <img
+                  src={img}
+                  alt={`${product.name} ${i}`}
+                  className="w-full h-full object-cover transition-transform duration-500"
+                />
+              </div>
+            ))}
+          </div>
 
           <ProductWatermark size="md" className="top-6 left-6" />
           
