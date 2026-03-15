@@ -143,7 +143,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-4 md:p-8">
+    <div className="max-w-6xl mx-auto p-4 md:p-8 pt-24 md:pt-32">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 bg-card p-4 md:p-6 rounded-3xl border border-border/50 shadow-sm">
         <div>
           <h1 className="text-2xl font-bold">Управление каталогом</h1>
@@ -190,7 +190,8 @@ export default function AdminPage() {
           <table className="w-full text-left text-sm whitespace-nowrap">
             <thead className="bg-muted/50 text-muted-foreground">
               <tr>
-                <th className="px-6 py-4 font-medium">Товар / Модель</th>
+                <th className="px-6 py-4 font-medium w-24">Фото</th>
+                <th className="px-6 py-4 font-medium">Модель</th>
                 <th className="px-6 py-4 font-medium">Категория</th>
                 <th className="px-6 py-4 font-medium">Цена</th>
                 <th className="px-6 py-4 font-medium">Кол-во</th>
@@ -210,22 +211,22 @@ export default function AdminPage() {
                 products.map((p) => (
                   <tr key={p.id} className="hover:bg-muted/30 transition-colors border-b border-border/10 last:border-0">
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-4">
-                        <div className="w-16 h-16 bg-secondary rounded-2xl relative overflow-hidden shrink-0 shadow-sm border border-border/20">
-                          {p.images?.[0] ? (
-                            <img src={p.images[0]} alt={p.name} className="absolute inset-0 w-full h-full object-cover" />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center text-muted-foreground bg-muted">
-                              <Eye size={20} />
-                            </div>
-                          )}
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="font-bold text-foreground text-base tracking-tight">{p.name}</span>
-                          <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest opacity-60">
-                            {p.brand}
-                          </span>
-                        </div>
+                      <div className="w-16 h-16 bg-secondary rounded-2xl relative overflow-hidden shrink-0 shadow-sm border border-border/20">
+                        {p.images?.[0] ? (
+                          <img src={p.images[0]} alt={p.name} className="absolute inset-0 w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-muted-foreground bg-muted">
+                            <Eye size={20} />
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex flex-col">
+                        <span className="font-bold text-foreground text-base tracking-tight">{p.name}</span>
+                        <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest opacity-60">
+                          {p.brand}
+                        </span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
