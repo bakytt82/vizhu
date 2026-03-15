@@ -235,23 +235,28 @@ export default function MobileProductDetailView({
           </button>
           <button
             onClick={onAddToCart}
+            disabled={!product.inStock}
             className={cn(
-              "flex-1 h-16 rounded-2xl flex items-center justify-center text-sm font-bold uppercase tracking-[0.1em] transition-all transform active:scale-95 shadow-xl shadow-black/5 px-4",
-              addedToCart 
-                ? "bg-green-500 text-white shadow-green-500/20" 
-                : "bg-vizhu-purple text-white shadow-vizhu-purple/20"
+              "flex-1 h-16 rounded-2xl flex items-center justify-center text-base font-bold uppercase tracking-widest transition-all transform active:scale-95 shadow-xl px-4",
+              !product.inStock
+                ? "bg-muted text-muted-foreground"
+                : addedToCart 
+                  ? "bg-green-600 text-white shadow-green-500/20" 
+                  : "bg-[#4F3267] text-white shadow-vizhu-purple/20"
             )}
           >
-            {addedToCart ? (
-               <div className="flex items-center gap-2">
-                 <Check size={18} />
-                 <span>{t.productAdded}</span>
-               </div>
+            {!product.inStock ? (
+              t.outOfStock
+            ) : addedToCart ? (
+              <div className="flex items-center gap-2">
+                <Check size={20} className="text-white" />
+                <span className="text-white">{t.productAdded || 'ДОБАВЛЕНО'}</span>
+              </div>
             ) : (
-               <div className="flex items-center gap-2">
-                 <ShoppingBag size={18} />
-                 <span>{t.addToCart}</span>
-               </div>
+              <div className="flex items-center gap-2">
+                <ShoppingBag size={20} className="text-white" />
+                <span className="text-white">{t.addToCart || 'В КОРЗИНУ'}</span>
+              </div>
             )}
           </button>
         </div>
