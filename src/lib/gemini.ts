@@ -95,7 +95,7 @@ export async function chatWithGeminiStream(userMessage: string, history: { role:
     });
   } catch (error: any) {
     console.error('Gemini Streaming API error:', error);
-    throw new Error('Ошибка при обращении к ИИ-ассистенту (Stream)');
+    throw new Error('Ошибка при обращении к ИИ-ассистенту (Stream): ' + (error?.message || String(error)));
   }
 }
 
