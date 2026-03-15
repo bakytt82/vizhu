@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Search, Star, Heart, Eye } from 'lucide-react';
-import { products } from '@/data/products';
+import { Search, Star, Heart, Eye, Loader2 } from 'lucide-react';
+import { getProducts } from '@/lib/db';
+import { Product } from '@/types';
 import { formatPrice, cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -17,6 +18,15 @@ export default function CatalogPage() {
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('all');
   const [sortBy, setSortBy] = useState('popular');
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    getProducts().then((data) => {
+      setProducts(data);
+      setIsLoading(false);
+    });
+  }, []);
 
   const filtered = products
     .filter((p) => {
@@ -112,8 +122,16 @@ export default function CatalogPage() {
               className="group card-hover"
             >
               <div className="bg-card rounded-[32px] overflow-hidden border border-border/50 hover:border-vizhu-purple/30 transition-all">
-                <div className="relative aspect-square bg-secondary/50 img-zoom p-6 flex items-center justify-center">
-                  <div className="text-7xl">👓</div>
+                <div className="relative aspect-square bg-secondary/50 img-zoom p-4 flex items-center justify-center">
+                  {product.images[0] ? (
+                    <img
+                      src={product.images[0]}
+                      alt={product.name}
+                      className="w-full h-full object-contain p-2"
+                    />
+                  ) : (
+                    <div className="text-7xl">👓</div>
+                  )}
                   
                   <div className="absolute top-4 left-4 flex flex-col gap-1.5 z-10">
                     {product.discount && (
@@ -183,13 +201,18 @@ export default function CatalogPage() {
           ))}
         </div>
 
-        {filtered.length === 0 && (
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-20">
+            <Loader2 className="animate-spin text-vizhu-purple mb-4" size={40} />
+            <p className="text-muted-foreground">{t.ai_thinking}...</p>
+          </div>
+        ) : filtered.length === 0 ? (
           <div className="text-center py-20 bg-muted/30 rounded-4xl border border-dashed border-border mt-8">
             <div className="text-6xl mb-6 grayscale opacity-30">🔍</div>
             <h3 className="text-2xl font-serif font-bold mb-2">{t.catalog_empty}</h3>
             <p className="text-muted-foreground max-w-sm mx-auto">{t.catalog_empty_desc}</p>
           </div>
-        )}
+        ) : null}
       </div>
     </div>
   );

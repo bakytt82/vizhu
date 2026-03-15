@@ -6,9 +6,11 @@ import { Sparkles, ArrowRight, RotateCcw, Star } from 'lucide-react';
 import { useQuizStore } from '@/stores/quizStore';
 import { useLanguageStore } from '@/stores/languageStore';
 import { translations } from '@/lib/translations';
-import { products } from '@/data/products';
+import { getProducts } from '@/lib/db';
+import { Product } from '@/types';
 import { formatPrice } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { Loader2 } from 'lucide-react';
 
 export default function QuizResultsPage() {
   const { answers, reset } = useQuizStore();
@@ -16,9 +18,10 @@ export default function QuizResultsPage() {
   const t = translations[language];
   const [aiRecommendation, setAiRecommendation] = useState('');
   const [loading, setLoading] = useState(true);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
 
   // Filter products based on quiz answers
-  const recommended = products.filter((p) => {
+  const recommended = allProducts.filter((p) => {
     let score = 0;
     if (answers.material && p.material === answers.material) score += 2;
     if (answers.purpose && p.category === (answers.purpose === 'vision' ? 'eyeglasses' : answers.purpose === 'sun' ? 'sunglasses' : answers.purpose === 'computer' ? 'computer' : 'sports')) score += 3;
@@ -27,12 +30,15 @@ export default function QuizResultsPage() {
     return score > 0;
   }).slice(0, 4);
 
-  const displayProducts = recommended.length > 0 ? recommended : products.slice(0, 4);
+  const displayProducts = recommended.length > 0 ? recommended : allProducts.slice(0, 4);
 
   useEffect(() => {
-    // Fetch AI recommendations
-    const fetchRecommendations = async () => {
+    // Fetch products and AI recommendations
+    const fetchData = async () => {
       try {
+        const prodData = await getProducts();
+        setAllProducts(prodData);
+
         const res = await fetch('/api/quiz', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -43,12 +49,12 @@ export default function QuizResultsPage() {
           setAiRecommendation(data.recommendation);
         }
       } catch (err) {
-        console.error('Failed to fetch AI recommendations');
+        console.error('Failed to fetch data');
       } finally {
         setLoading(false);
       }
     };
-    fetchRecommendations();
+    fetchData();
   }, [answers, language]);
 
   return (
@@ -84,7 +90,7 @@ export default function QuizResultsPage() {
         {loading && (
           <div className="bg-muted rounded-2xl p-6 mb-8 animate-pulse">
             <div className="flex items-center gap-3">
-              <Sparkles size={20} className="text-vizhu-purple animate-spin" />
+              <Loader2 size={20} className="text-vizhu-purple animate-spin" />
               <span className="text-sm text-muted-foreground">{t.quiz_ai_analyzing}</span>
             </div>
           </div>
@@ -100,7 +106,11 @@ export default function QuizResultsPage() {
             >
               <div className="bg-card rounded-2xl overflow-hidden border border-border/50 hover:border-vizhu-purple/30 transition-all">
                 <div className="relative aspect-square bg-secondary/50 flex items-center justify-center p-4">
-                  <div className="text-6xl">👓</div>
+                  {product.images?.[0] ? (
+                    <img src={product.images[0]} alt={product.name} className="w-full h-full object-contain" />
+                  ) : (
+                    <div className="text-6xl">👓</div>
+                  )}
                   {product.discount && (
                     <Badge className="absolute top-2 left-2 bg-destructive text-white text-xs">
                       -{product.discount}%

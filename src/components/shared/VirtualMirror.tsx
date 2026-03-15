@@ -6,7 +6,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Canvas } from '@react-three/fiber';
 import { Environment, ContactShadows } from '@react-three/drei';
 import { cn } from '@/lib/utils';
-import { products } from '@/data/products';
+import { getProducts } from '@/lib/db';
+import { Product } from '@/types';
 import { useCartStore } from '@/stores/cartStore';
 import { useFaceTracking } from '@/hooks/useFaceTracking';
 import GlassesModel from './AR/GlassesModel';
@@ -20,20 +21,26 @@ interface VirtualMirrorProps {
 export default function VirtualMirror({ isOpen, onClose, product }: VirtualMirrorProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const { isReady, error, results } = useFaceTracking(videoRef);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [currentProductIndex, setCurrentProductIndex] = useState(0);
   const [isCapturing, setIsCapturing] = useState(false);
   const [showGuide, setShowGuide] = useState(true);
 
   const addItem = useCartStore((s) => s.addItem);
-  const activeProduct = product || products[currentProductIndex];
+  
+  useEffect(() => {
+    getProducts().then(setAllProducts);
+  }, []);
+
+  const activeProduct = product || allProducts[currentProductIndex];
 
   // Set initial product index
   useEffect(() => {
-    if (product) {
-      const idx = products.findIndex(p => p.id === product.id);
+    if (product && allProducts.length > 0) {
+      const idx = allProducts.findIndex(p => p.id === product.id || p.slug === product.slug);
       if (idx >= 0) setCurrentProductIndex(idx);
     }
-  }, [product]);
+  }, [product, allProducts]);
 
   // Hide guide when face detected
   useEffect(() => {
@@ -70,10 +77,10 @@ export default function VirtualMirror({ isOpen, onClose, product }: VirtualMirro
     setTimeout(() => setIsCapturing(false), 1000);
   };
 
-  const nextProduct = () => setCurrentProductIndex((i) => (i + 1) % products.length);
-  const prevProduct = () => setCurrentProductIndex((i) => (i - 1 + products.length) % products.length);
+  const nextProduct = () => setCurrentProductIndex((i) => (i + 1) % allProducts.length);
+  const prevProduct = () => setCurrentProductIndex((i) => (i - 1 + allProducts.length) % allProducts.length);
 
-  const displayProduct = products[currentProductIndex];
+  const displayProduct = allProducts[currentProductIndex];
 
   return (
     <AnimatePresence>
@@ -246,7 +253,8 @@ export default function VirtualMirror({ isOpen, onClose, product }: VirtualMirro
               </button>
               
               <div className="flex flex-col gap-3 max-h-[300px] overflow-y-auto no-scrollbar py-2">
-                {products.map((p, i) => (
+              <div className="flex flex-col gap-3 max-h-[300px] overflow-y-auto no-scrollbar py-2">
+                {allProducts.map((p, i) => (
                   <button
                     key={p.id}
                     onClick={() => setCurrentProductIndex(i)}
@@ -262,6 +270,7 @@ export default function VirtualMirror({ isOpen, onClose, product }: VirtualMirro
                     </span>
                   </button>
                 ))}
+              </div>
               </div>
 
               <button 

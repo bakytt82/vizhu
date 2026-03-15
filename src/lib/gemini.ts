@@ -1,5 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
-import { products } from '@/data/products';
+import { getProducts } from './db';
+import { Product } from '@/types';
 
 const getAI = () => {
   if (!process.env.GEMINI_API_KEY) {
@@ -8,11 +9,21 @@ const getAI = () => {
   return new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
 };
 
-const productContext = products.map(p => `- ${p.name} (${p.brand}): ${p.price} сом, стиль ${p.shape}, материал ${p.material}, категория ${p.category}`).join('\n');
+async function getCurrentProductContext() {
+  const products = await getProducts();
+  return products.map(p => `- ${p.name} (${p.brand}): ${p.price} сом, стиль ${p.shape}, материал ${p.material}, категория ${p.category}`).join('\n');
+}
 
-const SYSTEM_PROMPT = `Role: You are "OptiCare AI", an expert virtual optician, stylist, and customer success assistant for the "VIZHU" online eyewear store in Karakol, Kyrgyzstan.
+const BASE_SYSTEM_PROMPT = `Role: You are "OptiCare AI", an expert virtual optician, stylist, and customer success assistant for the "VIZHU" online eyewear store in Karakol, Kyrgyzstan.
 
 Your Goal: Help customers find the perfect eyewear through professional consultation.
+
+Store Info:
+- Address: г. Каракол, ул. Токтогула 259/8
+- Phone: +996 772 18-88-02`;
+
+function getSystemPrompt(language: string = 'ru', productContext: string) {
+  return `${BASE_SYSTEM_PROMPT}
 
 Current Inventory:
 ${productContext}
@@ -21,12 +32,7 @@ Core Responsibilities:
 1. Style Consultation: Recommend specific frames from inventory.
 2. Virtual Mirror Guide: Use "tryOnFrame" tool with correct product ID when user wants to try on glasses.
 
-Store Info:
-- Address: г. Каракол, ул. Токтогула 259/8
-- Phone: +996 772 18-88-02`;
-
-function getSystemPrompt(language: string = 'ru') {
-  return `${SYSTEM_PROMPT}\n\nCRITICAL INSTRUCTION: You MUST communicate with the user entirely in the language corresponding to this language code: '${language}' (e.g. 'ru' for Russian, 'en' for English, 'kg' for Kyrgyz language). Do not use any other language.`;
+CRITICAL INSTRUCTION: You MUST communicate with the user entirely in the language corresponding to this language code: '${language}' (e.g. 'ru' for Russian, 'en' for English, 'kg' for Kyrgyz language). Do not use any other language.`;
 }
 
 export const TOOLS: any = [
@@ -52,10 +58,11 @@ export const TOOLS: any = [
 
 export async function chatWithGemini(userMessage: string, history: { role: string; content: string }[], language: string = 'ru') {
   try {
+    const productContext = await getCurrentProductContext();
     const chat = getAI().chats.create({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-2.0-flash',
       config: {
-        systemInstruction: getSystemPrompt(language),
+        systemInstruction: getSystemPrompt(language, productContext),
         maxOutputTokens: 1024,
         temperature: 0.7,
         tools: TOOLS,
@@ -79,10 +86,11 @@ export async function chatWithGemini(userMessage: string, history: { role: strin
 
 export async function chatWithGeminiStream(userMessage: string, history: { role: string; content: string }[], language: string = 'ru') {
   try {
+    const productContext = await getCurrentProductContext();
     const chat = getAI().chats.create({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-2.0-flash',
       config: {
-        systemInstruction: getSystemPrompt(language),
+        systemInstruction: getSystemPrompt(language, productContext),
         maxOutputTokens: 1024,
         temperature: 0.7,
         tools: TOOLS,
@@ -110,10 +118,11 @@ export async function chatWithGeminiVision(
   language: string = 'ru'
 ) {
   try {
+    const productContext = await getCurrentProductContext();
     const chat = getAI().chats.create({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-2.0-flash',
       config: {
-        systemInstruction: getSystemPrompt(language),
+        systemInstruction: getSystemPrompt(language, productContext),
         maxOutputTokens: 1500,
         temperature: 0.7,
       },
@@ -163,9 +172,10 @@ export async function parsePrescription(imageBase64: string, mimeType: string) {
 
 export async function getQuizRecommendations(answers: Record<string, string>) {
   try {
+    const productContext = await getCurrentProductContext();
     const prompt = `Подбери 3-5 оправ. Параметры: ${JSON.stringify(answers)}. Ассортимент: ${productContext}`;
     const chat = getAI().chats.create({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-2.0-flash',
       config: {
         systemInstruction: 'Ты — эксперт-оптик. Помоги подобрать очки.',
         maxOutputTokens: 1024,

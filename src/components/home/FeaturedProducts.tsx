@@ -1,6 +1,8 @@
 'use client';
 
-import { products } from '@/data/products';
+import { useState, useEffect } from 'react';
+import { getProducts } from '@/lib/db';
+import { Product } from '@/types';
 import Link from 'next/link';
 import { ShoppingBag, Star, ArrowRight, Eye } from 'lucide-react';
 import { formatPrice, cn, getLangText } from '@/lib/utils';
@@ -14,8 +16,14 @@ export default function FeaturedProducts() {
   const { language } = useLanguageStore();
   const t = translations[language];
   const addItem = useCartStore((s) => s.addItem);
+  const [featured, setFeatured] = useState<Product[]>([]);
 
-  const featured = products.filter((p) => p.isBestseller).slice(0, 4);
+  useEffect(() => {
+    getProducts().then((data) => {
+      const bestsellers = data.filter((p) => p.isBestseller).slice(0, 4);
+      setFeatured(bestsellers);
+    });
+  }, []);
 
   return (
     <section className="py-24 bg-background overflow-hidden">
@@ -66,9 +74,13 @@ export default function FeaturedProducts() {
               >
                 <div className="relative aspect-4/5 bg-secondary/50 rounded-4xl overflow-hidden mb-6 group-hover:shadow-2xl group-hover:shadow-vizhu-purple/10 transition-all">
                   <div className="w-full h-full flex items-center justify-center p-8 transition-transform duration-700 group-hover:scale-110">
-                    <div className="text-8xl grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500">
-                      {product.category === 'sunglasses' ? '🕶️' : '👓'}
-                    </div>
+                    {product.images?.[0] ? (
+                      <img src={product.images[0]} alt={product.name} className="w-full h-full object-contain" />
+                    ) : (
+                      <div className="text-8xl grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500">
+                        {product.category === 'sunglasses' ? '🕶️' : '👓'}
+                      </div>
+                    )}
                   </div>
                   
                   {product.isNew && (

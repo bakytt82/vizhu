@@ -5,13 +5,22 @@ import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { useLanguageStore } from '@/stores/languageStore';
 import { translations } from '@/lib/translations';
-import { products } from '@/data/products';
+import { useState, useEffect } from 'react';
+import { getProducts } from '@/lib/db';
+import { Product } from '@/types';
 import { formatPrice } from '@/lib/utils';
 
 export default function MobileHomeView() {
   const { language } = useLanguageStore();
   const t = translations[language];
-  const featured = products.filter((p) => p.isBestseller).slice(0, 4);
+  const [featured, setFeatured] = useState<Product[]>([]);
+
+  useEffect(() => {
+    getProducts().then((data) => {
+      const bestsellers = data.filter((p) => p.isBestseller).slice(0, 4);
+      setFeatured(bestsellers);
+    });
+  }, []);
 
   return (
     <div className="bg-background min-h-screen pb-32 lg:hidden">
@@ -60,8 +69,14 @@ export default function MobileHomeView() {
             >
               <Link href={`/catalog/${product.slug}`} className="block">
                 <div className="aspect-square bg-secondary/50 rounded-[32px] flex items-center justify-center p-6 mb-4 relative overflow-hidden">
-                  <div className="text-5xl transition-transform duration-500 group-hover:scale-110 grayscale opacity-40">
-                    {product.category === 'sunglasses' ? '🕶️' : '👓'}
+                  <div className="w-full h-full flex items-center justify-center p-6 transition-transform duration-500 group-hover:scale-110">
+                    {product.images?.[0] ? (
+                      <img src={product.images[0]} alt={product.name} className="w-full h-full object-contain" />
+                    ) : (
+                      <div className="text-5xl grayscale opacity-40">
+                        {product.category === 'sunglasses' ? '🕶️' : '👓'}
+                      </div>
+                    )}
                   </div>
                   {product.isNew && (
                     <div className="absolute top-4 left-4 bg-vizhu-orange text-white text-[8px] px-2 py-1 rounded-lg font-bold uppercase tracking-wider">{t.catalog_new}</div>

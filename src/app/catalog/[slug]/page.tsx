@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { Star, Heart, ShoppingBag, Eye, ChevronLeft, Check, Truck, Shield, RotateCcw } from 'lucide-react';
-import { products, reviews } from '@/data/products';
+import { Star, Heart, ShoppingBag, Eye, ChevronLeft, Check, Truck, Shield, RotateCcw, Loader2 } from 'lucide-react';
+import { reviews } from '@/data/products';
+import { getProductBySlug } from '@/lib/db';
+import { Product } from '@/types';
 import { formatPrice, cn, getLangText } from '@/lib/utils';
 import { useCartStore } from '@/stores/cartStore';
 import { Badge } from '@/components/ui/badge';
@@ -17,14 +19,32 @@ export default function ProductPage() {
   const params = useParams();
   const { language } = useLanguageStore();
   const t = translations[language];
-  const product = products.find((p) => p.slug === params.slug);
+  const [product, setProduct] = useState<Product | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [selectedColor, setSelectedColor] = useState(0);
   const [addedToCart, setAddedToCart] = useState(false);
   const addItem = useCartStore((s) => s.addItem);
 
-  if (!product) {
+  useEffect(() => {
+    if (params.slug) {
+      getProductBySlug(params.slug as string).then((data) => {
+        setProduct(data);
+        setIsLoading(false);
+      });
+    }
+  }, [params.slug]);
+
+  if (isLoading) {
     return (
       <div className="pt-24 min-h-screen flex items-center justify-center">
+        <Loader2 className="animate-spin text-vizhu-purple" size={40} />
+      </div>
+    );
+  }
+
+  if (!product) {
+    return (
+      <div className="pt-24 min-h-screen flex items-center justify-center border-t border-border/10">
         <div className="text-center">
           <div className="text-6xl mb-4">😕</div>
           <h1 className="text-2xl font-serif font-bold mb-2">Товар не найден</h1>
@@ -60,8 +80,12 @@ export default function ProductPage() {
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
             {/* Image gallery */}
             <div>
-              <div className="bg-secondary/50 rounded-2xl aspect-square flex items-center justify-center relative overflow-hidden">
-                <div className="text-[10rem]">👓</div>
+              <div className="bg-secondary/50 rounded-2xl aspect-square flex items-center justify-center relative overflow-hidden p-8">
+                {product.images?.[0] ? (
+                  <img src={product.images[0]} alt={product.name} className="w-full h-full object-contain" />
+                ) : (
+                  <div className="text-[10rem]">👓</div>
+                )}
                 
                 {/* Badges */}
                 <div className="absolute top-4 left-4 flex flex-col gap-2">
@@ -85,16 +109,16 @@ export default function ProductPage() {
               </div>
 
               {/* Color swatches under image */}
-              <div className="flex gap-3 mt-4 justify-center">
-                {product.images?.map((_, i) => (
+              <div className="flex gap-3 mt-4 justify-center overflow-x-auto p-1">
+                {product.images?.map((img, i) => (
                   <button
                     key={i}
                     className={cn(
-                      'w-16 h-16 rounded-lg bg-secondary/50 flex items-center justify-center border-2 transition-all',
+                      'w-20 h-20 rounded-xl bg-secondary/50 flex items-center justify-center border-2 transition-all overflow-hidden shrink-0',
                       i === 0 ? 'border-vizhu-purple' : 'border-transparent hover:border-border'
                     )}
                   >
-                    <span className="text-2xl">👓</span>
+                    <img src={img} alt={`${product.name} ${i}`} className="w-full h-full object-cover" />
                   </button>
                 ))}
               </div>
