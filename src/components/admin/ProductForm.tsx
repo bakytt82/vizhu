@@ -273,7 +273,7 @@ export default function ProductForm({
           <div className="flex flex-wrap gap-4">
             {images.map((img, idx) => (
               <div key={idx} className="relative w-24 h-24 rounded-xl overflow-hidden border border-border group">
-                <Image src={img} alt={`Product image ${idx + 1}`} fill className="object-cover" />
+                <img src={img} alt={`Product image ${idx + 1}`} className="w-full h-full object-cover" />
                 <button
                   type="button"
                   onClick={() => removeImage(idx)}
