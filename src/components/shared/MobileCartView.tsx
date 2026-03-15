@@ -36,7 +36,7 @@ export default function MobileCartView({
   }, {} as Record<string, CartItem[]>);
 
   return (
-    <div className="bg-background min-h-screen pb-48 lg:hidden">
+    <div className="bg-background min-h-screen pb-72 lg:hidden">
       {/* Header */}
       <header className="px-6 pt-12 pb-6 flex items-center justify-between sticky top-0 bg-background/80 backdrop-blur-md z-30 border-b border-border/50">
         <div className="flex items-center gap-4">
@@ -125,38 +125,42 @@ export default function MobileCartView({
       </div>
 
       {/* Sticky Bottom Summary */}
-      <div className="fixed bottom-24 left-0 right-0 p-6 bg-background/80 backdrop-blur-2xl border-t border-border z-40 space-y-6 shadow-2xl">
-        <div className="flex items-center justify-between">
+      <div className="fixed bottom-20 left-4 right-4 p-5 bg-background/60 backdrop-blur-3xl border border-white/20 z-40 space-y-4 rounded-[32px] shadow-[0_20px_50px_rgba(0,0,0,0.15)] animate-in fade-in slide-in-from-bottom-5 duration-500">
+        <div className="flex items-end justify-between px-2">
            <button 
             onClick={() => {
-              if (selectedItems.size === items.length) {
-                // none
-              } else {
-                // select all
-              }
+              // Toggle select all logic
             }}
-            className="flex items-center gap-4 group"
+            className="flex items-center gap-3 active:scale-95 transition-transform pb-1"
            >
-              <div className="w-7 h-7 rounded-xl border-2 border-muted-foreground/30 flex items-center justify-center group-active:scale-90 transition-transform">
-                 {selectedItems.size === items.length && <div className="w-2 h-2 bg-vizhu-purple rounded-full" />}
+              <div className={cn(
+                "w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all",
+                selectedItems.size === items.length ? "bg-vizhu-purple border-vizhu-purple" : "border-muted-foreground/20 bg-white/5"
+              )}>
+                 {selectedItems.size === items.length && <div className="w-1.5 h-1.5 bg-white rounded-full" />}
               </div>
-              <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{t.cart_select_all}</span>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/80">{t.cart_select_all}</span>
            </button>
+           
            <div className="text-right">
-              <span className="text-[10px] uppercase font-bold text-muted-foreground/50 block tracking-widest mb-1">{t.cart_summary}</span>
-              <span className="text-3xl font-display font-bold text-vizhu-orange">{formatPrice(selectedTotal, t.som)}</span>
+              <span className="text-[10px] uppercase font-bold text-muted-foreground/40 block tracking-widest mb-0.5">{t.cart_summary}</span>
+              <div className="flex items-baseline justify-end gap-1">
+                <span className="text-3xl font-display font-bold text-vizhu-orange leading-none">{formatPrice(selectedTotal, '').trim()}</span>
+                <span className="text-xs font-bold text-vizhu-orange opacity-60 uppercase">{t.som}</span>
+              </div>
            </div>
         </div>
+
         <Link 
           href="/checkout"
           className={cn(
-            "w-full h-16 rounded-[32px] flex items-center justify-center text-[10px] font-bold uppercase tracking-[0.3em] transition-all shadow-xl active:scale-95",
+            "w-full h-14 rounded-[22px] flex items-center justify-center text-[10px] font-bold uppercase tracking-[0.3em] transition-all shadow-xl active:scale-95",
             selectedItems.size === 0 
               ? "bg-muted text-muted-foreground opacity-50 pointer-events-none" 
-              : "bg-vizhu-purple text-white shadow-vizhu-purple/20"
+              : "bg-vizhu-purple text-white shadow-vizhu-purple/40"
           )}
         >
-          {t.cart_checkout} ({selectedItems.size})
+          {t.cart_checkout} — {selectedItems.size}
         </Link>
       </div>
     </div>
