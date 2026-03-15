@@ -65,7 +65,12 @@ export const useAssistantStore = create<AssistantState>((set) => ({
   setMirrorOpen: (isMirrorOpen) => set({ isMirrorOpen }),
   clearChat: (initialMessage) => set({ messages: [initialMessage], userPreferences: {}, prescription: null }),
   initChat: (initialMessage) => set((state) => {
-    if (state.messages.length === 0) return { messages: [initialMessage] };
+    if (state.messages.length === 0) {
+      return { messages: [initialMessage] };
+    }
+    if (state.messages[0]?.id === '0') {
+      return { messages: [initialMessage, ...state.messages.slice(1)] };
+    }
     return state;
   }),
 }));
