@@ -73,11 +73,15 @@ export default function FeaturedProducts() {
                 className="group block"
               >
                 <div className="relative aspect-4/5 bg-secondary/50 rounded-4xl overflow-hidden mb-6 group-hover:shadow-2xl group-hover:shadow-vizhu-purple/10 transition-all">
-                  <div className="w-full h-full flex items-center justify-center transition-transform duration-700 group-hover:scale-110">
+                  <div className="w-full h-full relative">
                     {product.images?.[0] ? (
-                      <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
+                      <img 
+                        src={product.images[0]} 
+                        alt={product.name} 
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                      />
                     ) : (
-                      <div className="text-8xl grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500">
+                      <div className="w-full h-full flex items-center justify-center text-8xl grayscale opacity-40 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500">
                         {product.category === 'sunglasses' ? '🕶️' : '👓'}
                       </div>
                     )}
