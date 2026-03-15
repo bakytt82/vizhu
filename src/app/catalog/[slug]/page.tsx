@@ -322,6 +322,8 @@ export default function ProductPage() {
         product={product}
         onAddToCart={handleAddToCart}
         addedToCart={addedToCart}
+        selectedColor={selectedColor}
+        setSelectedColor={setSelectedColor}
       />
     </>
   );

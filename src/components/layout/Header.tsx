@@ -21,8 +21,8 @@ export default function Header() {
   const { theme, toggleTheme } = useThemeStore();
   const { language, setLanguage } = useLanguageStore();
   const t = translations[language];
-  const itemCount = useCartStore((s) => s.getItemCount());
-  const wishlistCount = useWishlistStore((s) => s.getItemCount());
+  const itemCount = useCartStore((s) => s.items.reduce((sum, item) => sum + item.quantity, 0));
+  const wishlistCount = useWishlistStore((s) => s.items.length);
 
   useEffect(() => {
     setIsMounted(true);

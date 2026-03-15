@@ -14,16 +14,19 @@ interface MobileProductDetailViewProps {
   product: Product;
   onAddToCart: () => void;
   addedToCart: boolean;
+  selectedColor: number;
+  setSelectedColor: (index: number) => void;
 }
 
 export default function MobileProductDetailView({
   product,
   onAddToCart,
   addedToCart,
+  selectedColor,
+  setSelectedColor,
 }: MobileProductDetailViewProps) {
   const { language } = useLanguageStore();
   const t = translations[language];
-  const [selectedColor, setSelectedColor] = useState(0);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [selectedLens, setSelectedLens] = useState('Neutral');
   const { toggleWishlist, isInWishlist } = useWishlistStore();
@@ -233,13 +236,23 @@ export default function MobileProductDetailView({
           <button
             onClick={onAddToCart}
             className={cn(
-              "flex-1 h-16 rounded-2xl text-[10px] font-bold uppercase tracking-[0.2em] transition-all transform active:scale-95 shadow-xl shadow-black/5",
+              "flex-1 h-16 rounded-2xl flex items-center justify-center text-sm font-bold uppercase tracking-[0.1em] transition-all transform active:scale-95 shadow-xl shadow-black/5 px-4",
               addedToCart 
                 ? "bg-green-500 text-white shadow-green-500/20" 
                 : "bg-vizhu-purple text-white shadow-vizhu-purple/20"
             )}
           >
-            {addedToCart ? t.productAdded : t.addToCart}
+            {addedToCart ? (
+               <div className="flex items-center gap-2">
+                 <Check size={18} />
+                 <span>{t.productAdded}</span>
+               </div>
+            ) : (
+               <div className="flex items-center gap-2">
+                 <ShoppingBag size={18} />
+                 <span>{t.addToCart}</span>
+               </div>
+            )}
           </button>
         </div>
       </div>
