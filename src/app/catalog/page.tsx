@@ -122,16 +122,14 @@ export default function CatalogPage() {
               className="group card-hover"
             >
               <div className="bg-card rounded-[32px] overflow-hidden border border-border/50 hover:border-vizhu-purple/30 transition-all">
-                <div className="relative aspect-square bg-secondary/50 img-zoom p-4 flex items-center justify-center">
-                  {product.images[0] ? (
-                    <img
-                      src={product.images[0]}
-                      alt={product.name}
-                      className="w-full h-full object-contain p-2"
-                    />
-                  ) : (
-                    <div className="text-7xl">👓</div>
-                  )}
+                <div className="relative aspect-square bg-secondary/50 img-zoom flex items-center justify-center">
+                  <div className="w-full h-full flex items-center justify-center p-2 transition-transform duration-700 group-hover:scale-110">
+                    {product.images?.[0] ? (
+                      <img src={product.images[0]} alt={product.name} className="w-full h-full object-contain" />
+                    ) : (
+                      <div className="text-7xl">👓</div>
+                    )}
+                  </div>
                   
                   <div className="absolute top-4 left-4 flex flex-col gap-1.5 z-10">
                     {product.discount && (

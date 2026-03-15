@@ -68,8 +68,8 @@ export default function MobileHomeView() {
               className="bg-card group"
             >
               <Link href={`/catalog/${product.slug}`} className="block">
-                <div className="aspect-square bg-secondary/50 rounded-[32px] flex items-center justify-center p-6 mb-4 relative overflow-hidden">
-                  <div className="w-full h-full flex items-center justify-center p-6 transition-transform duration-500 group-hover:scale-110">
+                <div className="aspect-square bg-secondary/50 rounded-[32px] flex items-center justify-center p-2 mb-4 relative overflow-hidden">
+                  <div className="w-full h-full flex items-center justify-center p-1 transition-transform duration-500 group-hover:scale-110">
                     {product.images?.[0] ? (
                       <img src={product.images[0]} alt={product.name} className="w-full h-full object-contain" />
                     ) : (
