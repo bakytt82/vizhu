@@ -11,6 +11,7 @@ import { useCartStore } from '@/stores/cartStore';
 import { translations } from '@/lib/translations';
 import { Badge } from '@/components/ui/badge';
 import { motion } from 'framer-motion';
+import ProductWatermark from '@/components/shared/ProductWatermark';
 
 export default function FeaturedProducts() {
   const { language } = useLanguageStore();
@@ -87,8 +88,10 @@ export default function FeaturedProducts() {
                     )}
                   </div>
                   
+                  <ProductWatermark size="md" className="top-4 left-4" />
+                  
                   {product.isNew && (
-                    <Badge variant="orange" className="absolute top-6 left-6 text-[10px] uppercase tracking-tighter font-bold px-3 py-1">
+                    <Badge variant="orange" className="absolute top-18 left-4 text-[10px] uppercase tracking-tighter font-bold px-3 py-1 z-10">
                       {t.catalog_new}
                     </Badge>
                   )}

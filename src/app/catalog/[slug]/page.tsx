@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { useLanguageStore } from '@/stores/languageStore';
 import { translations } from '@/lib/translations';
 import MobileProductDetailView from '@/components/shared/MobileProductDetailView';
+import ProductWatermark from '@/components/shared/ProductWatermark';
 
 export default function ProductPage() {
   const params = useParams();
@@ -89,8 +90,10 @@ export default function ProductPage() {
                   <div className="text-[10rem]">👓</div>
                 )}
                 
+                <ProductWatermark size="lg" className="top-6 left-6" />
+
                 {/* Badges */}
-                <div className="absolute top-4 left-4 flex flex-col gap-2">
+                <div className="absolute top-24 left-6 flex flex-col gap-2 z-10">
                   {product.discount && (
                     <Badge variant="destructive" className="px-3 py-1">
                       -{product.discount}%

@@ -11,6 +11,7 @@ import { Product } from '@/types';
 import { formatPrice } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Loader2 } from 'lucide-react';
+import ProductWatermark from '@/components/shared/ProductWatermark';
 
 export default function QuizResultsPage() {
   const { answers, reset } = useQuizStore();
@@ -121,8 +122,10 @@ export default function QuizResultsPage() {
                   ) : (
                     <div className="flex items-center justify-center w-full h-full text-7xl">👓</div>
                   )}
+                  <ProductWatermark size="sm" className="top-2 left-2" />
+                  
                   {product.discount && (
-                    <Badge className="absolute top-2 left-2 bg-destructive text-white text-xs">
+                    <Badge className="absolute top-12 left-2 bg-destructive text-white text-xs z-10">
                       -{product.discount}%
                     </Badge>
                   )}

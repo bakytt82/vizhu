@@ -7,6 +7,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useLanguageStore } from '@/stores/languageStore';
 import { translations } from '@/lib/translations';
+import ProductWatermark from '@/components/shared/ProductWatermark';
 
 interface MobileProductDetailViewProps {
   product: Product;
@@ -50,6 +51,7 @@ export default function MobileProductDetailView({
       {/* Main Image & Try-on */}
       <div className="px-6 mb-4">
         <div className="aspect-square bg-secondary rounded-4xl flex items-center justify-center relative overflow-hidden group">
+          <ProductWatermark size="md" className="top-6 left-6" />
           <img
             src={product.images[0]}
             alt={product.name}

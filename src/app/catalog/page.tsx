@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { CATEGORIES } from '@/lib/constants';
 import { useLanguageStore } from '@/stores/languageStore';
 import { translations } from '@/lib/translations';
+import ProductWatermark from '@/components/shared/ProductWatermark';
 
 export default function CatalogPage() {
   const { language } = useLanguageStore();
@@ -133,7 +134,9 @@ export default function CatalogPage() {
                     <div className="flex items-center justify-center w-full h-full text-7xl">👓</div>
                   )}
                   
-                  <div className="absolute top-4 left-4 flex flex-col gap-1.5 z-10">
+                  <ProductWatermark size="sm" className="top-3 left-3" />
+                  
+                  <div className="absolute top-14 left-3 flex flex-col gap-1.5 z-10">
                     {product.discount && (
                       <Badge variant="destructive" className="text-[10px] font-bold px-2 py-0.5 uppercase tracking-tighter">
                         -{product.discount}%

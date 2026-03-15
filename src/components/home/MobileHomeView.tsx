@@ -9,6 +9,7 @@ import { useState, useEffect } from 'react';
 import { getProducts } from '@/lib/db';
 import { Product } from '@/types';
 import { formatPrice } from '@/lib/utils';
+import ProductWatermark from '@/components/shared/ProductWatermark';
 
 export default function MobileHomeView() {
   const { language } = useLanguageStore();
@@ -69,6 +70,7 @@ export default function MobileHomeView() {
             >
               <Link href={`/catalog/${product.slug}`} className="block">
                 <div className="aspect-square bg-secondary/50 rounded-[32px] flex items-center justify-center mb-4 relative overflow-hidden p-0">
+                  <ProductWatermark size="sm" className="top-3 left-3" />
                   <div className="w-full h-full flex items-center justify-center transition-transform duration-500 group-hover:scale-110">
                     {product.images?.[0] ? (
                       <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
@@ -79,7 +81,7 @@ export default function MobileHomeView() {
                     )}
                   </div>
                   {product.isNew && (
-                    <div className="absolute top-4 left-4 bg-vizhu-orange text-white text-[8px] px-2 py-1 rounded-lg font-bold uppercase tracking-wider">{t.catalog_new}</div>
+                    <div className="absolute top-12 left-3 bg-vizhu-orange text-white text-[8px] px-2 py-1 rounded-lg font-bold uppercase tracking-wider z-10">{t.catalog_new}</div>
                   )}
                 </div>
                 <div className="px-2">
