@@ -21,7 +21,7 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const { message, history, image, mimeType, mode } = await req.json();
+    const { message, history, image, mimeType, mode, language } = await req.json();
 
     // Prescription OCR mode
     if (mode === 'prescription' && image) {
@@ -35,7 +35,8 @@ export async function POST(req: NextRequest) {
         message || 'Проанализируй это изображение.',
         image,
         mimeType || 'image/jpeg',
-        history || []
+        history || [],
+        language
       );
       return NextResponse.json({ response });
     }
@@ -45,7 +46,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Message is required' }, { status: 400 });
     }
 
-    const stream = await chatWithGeminiStream(message, history || []);
+    const stream = await chatWithGeminiStream(message, history || [], language);
     const encoder = new TextEncoder();
 
     const readableStream = new ReadableStream({

@@ -20,11 +20,14 @@ ${productContext}
 Core Responsibilities:
 1. Style Consultation: Recommend specific frames from inventory.
 2. Virtual Mirror Guide: Use "tryOnFrame" tool with correct product ID when user wants to try on glasses.
-3. Professional Tone: Be polite, professional, and respond in Russian.
 
 Store Info:
 - Address: г. Каракол, ул. Токтогула 259/8
 - Phone: +996 772 18-88-02`;
+
+function getSystemPrompt(language: string = 'ru') {
+  return `${SYSTEM_PROMPT}\n\nCRITICAL INSTRUCTION: You MUST communicate with the user entirely in the language corresponding to this language code: '${language}' (e.g. 'ru' for Russian, 'en' for English, 'kg' for Kyrgyz language). Do not use any other language.`;
+}
 
 export const TOOLS: any = [
   {
@@ -47,12 +50,12 @@ export const TOOLS: any = [
   },
 ];
 
-export async function chatWithGemini(userMessage: string, history: { role: string; content: string }[]) {
+export async function chatWithGemini(userMessage: string, history: { role: string; content: string }[], language: string = 'ru') {
   try {
     const chat = getAI().chats.create({
       model: 'gemini-2.5-flash',
       config: {
-        systemInstruction: SYSTEM_PROMPT,
+        systemInstruction: getSystemPrompt(language),
         maxOutputTokens: 1024,
         temperature: 0.7,
         tools: TOOLS,
@@ -74,12 +77,12 @@ export async function chatWithGemini(userMessage: string, history: { role: strin
   }
 }
 
-export async function chatWithGeminiStream(userMessage: string, history: { role: string; content: string }[]) {
+export async function chatWithGeminiStream(userMessage: string, history: { role: string; content: string }[], language: string = 'ru') {
   try {
     const chat = getAI().chats.create({
       model: 'gemini-2.5-flash',
       config: {
-        systemInstruction: SYSTEM_PROMPT,
+        systemInstruction: getSystemPrompt(language),
         maxOutputTokens: 1024,
         temperature: 0.7,
         tools: TOOLS,
@@ -103,13 +106,14 @@ export async function chatWithGeminiVision(
   userMessage: string,
   imageBase64: string,
   mimeType: string,
-  history: { role: string; content: string }[]
+  history: { role: string; content: string }[],
+  language: string = 'ru'
 ) {
   try {
     const chat = getAI().chats.create({
       model: 'gemini-2.5-flash',
       config: {
-        systemInstruction: SYSTEM_PROMPT,
+        systemInstruction: getSystemPrompt(language),
         maxOutputTokens: 1500,
         temperature: 0.7,
       },

@@ -6,6 +6,8 @@ import { cn } from '@/lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAssistantStore } from '@/stores/assistantStore';
 import { useCartStore } from '@/stores/cartStore';
+import { useLanguageStore } from '@/stores/languageStore';
+import { translations } from '@/lib/translations';
 import { products } from '@/data/products';
 import Link from 'next/link';
 import type { ChatMessage } from '@/types';
@@ -23,8 +25,22 @@ export default function ChatWidget() {
   const {
     messages, isOpen, isLoading,
     addMessage, setMessages, setLoading, toggleOpen, setOpen,
-    setMirrorOpen, setSelectedProductId,
+    setMirrorOpen, setSelectedProductId, initChat,
   } = useAssistantStore();
+
+  const { language } = useLanguageStore();
+  const t = translations[language];
+
+  const getInitialMessage = (): ChatMessage => ({
+    id: '0',
+    role: 'assistant',
+    content: `${t.ai_initial_welcome}, ${t.ai_expert_guide}\n\n${t.ai_help_with}\n• ${t.ai_help_1}\n• ${t.ai_help_2}\n• ${t.ai_help_3}\n• ${t.ai_help_4}\n\n${t.ai_what_to_start}`,
+    timestamp: new Date(),
+  });
+
+  useEffect(() => {
+    initChat(getInitialMessage());
+  }, [language, initChat]);
 
   const addItem = useCartStore((s) => s.addItem);
   const [input, setInput] = useState('');
@@ -70,7 +86,7 @@ export default function ChatWidget() {
       const res = await fetch('/api/gemini', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: msg, history }),
+        body: JSON.stringify({ message: msg, history, language }),
       });
 
       if (!res.ok) throw new Error('Failed to fetch');
@@ -137,7 +153,7 @@ export default function ChatWidget() {
     } catch {
       useAssistantStore.getState().updateMessage(
         assistantMsgId, 
-        'Извините, не удалось получить ответ. Позвоните: +996 772 18-88-02'
+        `${t.ai_error_response} +996 772 18-88-02`
       );
     } finally {
       setLoading(false);
@@ -155,7 +171,7 @@ export default function ChatWidget() {
       addMessage({
         id: Date.now().toString(),
         role: 'user',
-        content: '📷 Фото загружено для анализа',
+        content: t.ai_photo_uploaded,
         timestamp: new Date(),
         imageUrl: URL.createObjectURL(file),
       });
@@ -167,10 +183,11 @@ export default function ChatWidget() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            message: 'Проанализируй мое фото и определи форму лица. Порекомендуй подходящие оправы из нашего каталога.',
+            message: t.ai_analyze_photo_prompt,
             image: base64,
             mimeType,
             history,
+            language,
           }),
         });
 
@@ -178,14 +195,14 @@ export default function ChatWidget() {
         addMessage({
           id: (Date.now() + 1).toString(),
           role: 'assistant',
-          content: data.response || 'Не удалось проанализировать фото.',
+          content: data.response || t.ai_analyze_photo_error,
           timestamp: new Date(),
         });
       } catch {
         addMessage({
           id: (Date.now() + 1).toString(),
           role: 'assistant',
-          content: 'Ошибка при анализе фото. Попробуйте снова.',
+          content: t.ai_photo_error,
           timestamp: new Date(),
         });
       } finally {
@@ -202,16 +219,16 @@ export default function ChatWidget() {
       addMessage({
         id: Date.now().toString(),
         role: 'assistant',
-        content: `✅ **${product.name}** добавлен в корзину!`,
+        content: `✅ **${product.name}** ${t.ai_product_added}`,
         timestamp: new Date(),
       });
     }
   };
 
   const quickOptions = [
-    { text: 'Подобрать очки', icon: '👓' },
-    { text: 'Помощь со стилем', icon: '✨' },
-    { text: 'Про покрытие линз', icon: '🔍' },
+    { text: t.ai_quick_1, icon: '👓' },
+    { text: t.ai_quick_2, icon: '✨' },
+    { text: t.ai_quick_3, icon: '🔍' },
   ];
 
   const WHATSAPP_NUMBER = '996772188802';
@@ -259,7 +276,7 @@ export default function ChatWidget() {
                 </div>
                 <div>
                   <h3 className="font-bold text-sm">OptiCare AI</h3>
-                  <p className="text-[10px] text-white/70 uppercase tracking-wider">Виртуальный стилист</p>
+                  <p className="text-[10px] text-white/70 uppercase tracking-wider">{t.ai_role_stylist}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -338,7 +355,7 @@ export default function ChatWidget() {
                   </div>
                   <div className="bg-muted rounded-2xl rounded-bl-sm px-4 py-3 flex items-center gap-2">
                     <Loader2 size={14} className="animate-spin text-vizhu-purple" />
-                    <span className="text-[13px] text-muted-foreground">Думаю...</span>
+                    <span className="text-[13px] text-muted-foreground">{t.ai_thinking}</span>
                   </div>
                 </div>
               )}
@@ -385,7 +402,7 @@ export default function ChatWidget() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && sendMessage()}
-                placeholder="Спросите OptiCare AI..."
+                placeholder={t.ai_ask_placeholder}
                 className="flex-1 py-2.5 px-3 rounded-2xl bg-muted border-0 focus:outline-none focus:ring-2 focus:ring-vizhu-purple/20 text-[13px]"
               />
               <button

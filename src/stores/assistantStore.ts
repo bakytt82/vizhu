@@ -34,18 +34,12 @@ interface AssistantState {
   setPrescription: (rx: Prescription | null) => void;
   setSelectedProductId: (id: string | null) => void;
   setMirrorOpen: (open: boolean) => void;
-  clearChat: () => void;
+  clearChat: (initialMessage: ChatMessage) => void;
+  initChat: (initialMessage: ChatMessage) => void;
 }
 
-const INITIAL_MESSAGE: ChatMessage = {
-  id: '0',
-  role: 'assistant',
-  content: 'Здравствуйте! 👋 Я — **OptiCare AI**, ваш экспертный гид в мире стиля и здоровья ваших глаз.\n\nЯ помогу вам:\n• Определить форму вашего лица\n• Подобрать идеальную оправу\n• Объяснить сложные оптические термины\n• Протестировать оправы в нашей **Виртуальной Примерочной**\n\nС чего бы вы хотели начать?',
-  timestamp: new Date(),
-};
-
 export const useAssistantStore = create<AssistantState>((set) => ({
-  messages: [INITIAL_MESSAGE],
+  messages: [],
   isOpen: false,
   isLoading: false,
   userPreferences: {},
@@ -69,5 +63,9 @@ export const useAssistantStore = create<AssistantState>((set) => ({
   setPrescription: (prescription) => set({ prescription }),
   setSelectedProductId: (selectedProductId) => set({ selectedProductId }),
   setMirrorOpen: (isMirrorOpen) => set({ isMirrorOpen }),
-  clearChat: () => set({ messages: [INITIAL_MESSAGE], userPreferences: {}, prescription: null }),
+  clearChat: (initialMessage) => set({ messages: [initialMessage], userPreferences: {}, prescription: null }),
+  initChat: (initialMessage) => set((state) => {
+    if (state.messages.length === 0) return { messages: [initialMessage] };
+    return state;
+  }),
 }));
