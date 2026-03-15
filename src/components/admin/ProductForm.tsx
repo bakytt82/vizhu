@@ -197,10 +197,10 @@ export default function ProductForm({
               onChange={(e) => setCategory(e.target.value)}
               className="w-full bg-muted border-0 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-vizhu-purple/20"
             >
-              <option value="Очки для зрения">Очки для зрения</option>
-              <option value="Солнцезащитные очки">Солнцезащитные очки</option>
-              <option value="Компьютерные очки">Компьютерные очки</option>
-              <option value="Детские очки">Детские очки</option>
+              <option value="eyeglasses">Очки для зрения</option>
+              <option value="sunglasses">Солнцезащитные очки</option>
+              <option value="computer">Компьютерные очки</option>
+              <option value="sports">Спортивные очки</option>
             </select>
           </div>
           <div className="space-y-2">

@@ -105,11 +105,21 @@ export default function QuizResultsPage() {
               className="group card-hover"
             >
               <div className="bg-card rounded-2xl overflow-hidden border border-border/50 hover:border-vizhu-purple/30 transition-all">
-                <div className="relative aspect-square bg-secondary/50 flex items-center justify-center p-4">
-                  {product.images?.[0] ? (
-                    <img src={product.images[0]} alt={product.name} className="w-full h-full object-contain" />
+                <div className="relative aspect-square bg-secondary/50 overflow-hidden group-hover:scale-105 transition-transform duration-500">
+                  {product.images?.[1] ? ( // Changed to check for second image for hover effect or just use first
+                    <img 
+                      src={product.images[0]} 
+                      alt={product.name} 
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                  ) : product.images?.[0] ? (
+                    <img 
+                      src={product.images[0]} 
+                      alt={product.name} 
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
                   ) : (
-                    <div className="text-6xl">👓</div>
+                    <div className="flex items-center justify-center w-full h-full text-7xl">👓</div>
                   )}
                   {product.discount && (
                     <Badge className="absolute top-2 left-2 bg-destructive text-white text-xs">

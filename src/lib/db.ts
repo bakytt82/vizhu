@@ -7,22 +7,25 @@ import { Product } from '@/types';
  * Falls back to static products if the database is empty or the request fails.
  */
 export async function getProducts(): Promise<Product[]> {
+  let dbProducts: Product[] = [];
   try {
     const { data, error } = await supabase
       .from('products')
       .select('*')
       .order('created_at', { ascending: false });
 
-    if (error || !data || data.length === 0) {
-      return staticProducts;
+    if (!error && data && data.length > 0) {
+      dbProducts = data.map(mapDbProductToFrontend);
     }
-
-    // Map Supabase product to Frontend Product type
-    return data.map(mapDbProductToFrontend);
   } catch (err) {
-    console.error('Error fetching products:', err);
-    return staticProducts;
+    console.error('Error fetching products from Supabase:', err);
   }
+
+  // Combine DB products with static products, prioritizing DB by slug
+  const dbSlugs = new Set(dbProducts.map(p => p.slug));
+  const uniqueStaticProducts = staticProducts.filter(p => !dbSlugs.has(p.slug));
+  
+  return [...dbProducts, ...uniqueStaticProducts];
 }
 
 /**
