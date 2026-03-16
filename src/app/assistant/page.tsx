@@ -22,6 +22,7 @@ export default function AssistantPage() {
 
   const addItem = useCartStore((s) => s.addItem);
   const [dbProducts, setDbProducts] = useState<Product[]>([]);
+  const [input, setInput] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
