@@ -101,10 +101,12 @@ export default function MobileCartView({
                       </div>
 
                       <div className="flex items-center justify-between">
-                         <div className="flex items-center gap-3 text-[9px] text-muted-foreground font-bold uppercase tracking-widest bg-secondary/80 px-3 py-1.5 rounded-full">
-                            <div className="w-2 h-2 rounded-full border border-black/5" style={{ backgroundColor: item.selectedColor.hex }} />
-                            {getLangText(item.selectedColor.name as any, language)}
-                         </div>
+                         {item.selectedColor && (
+                           <div className="flex items-center gap-3 text-[9px] text-muted-foreground font-bold uppercase tracking-widest bg-secondary/80 px-3 py-1.5 rounded-full">
+                              <div className="w-2 h-2 rounded-full border border-black/5" style={{ backgroundColor: item.selectedColor.hex }} />
+                              {getLangText(item.selectedColor.name as any, language)}
+                           </div>
+                         )}
                          
                          <div className="flex items-center gap-3 bg-secondary rounded-2xl p-0.5 border border-border/30">
                             <button onClick={() => updateQuantity(item.product.id, item.quantity - 1)} className="w-8 h-8 flex items-center justify-center bg-card rounded-xl shadow-sm active:scale-90 transition-transform">
