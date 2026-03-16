@@ -229,7 +229,7 @@ export default function ChatWidget() {
   const handleAddToCart = (productId: string) => {
     const product = dbProducts.find((p) => p.id === productId);
     if (product) {
-      addItem(product, product.colors[0]);
+      addItem(product, product.colors?.[0]);
       addMessage({
         id: Date.now().toString(),
         role: 'assistant',
