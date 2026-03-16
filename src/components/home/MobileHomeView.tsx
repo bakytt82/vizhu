@@ -28,14 +28,14 @@ export default function MobileHomeView() {
       {/* Hero Section */}
       <div className="relative aspect-4/5 bg-secondary overflow-hidden flex items-center justify-center p-12 text-center text-white">
         <Image
-           src="/hero-luxury.png"
-           alt="Hero"
-           fill
-           className="object-cover"
-           priority
+          src="/hero-luxury.png"
+          alt="Hero"
+          fill
+          className="object-cover"
+          priority
         />
         <div className="absolute inset-0 bg-linear-to-b from-black/20 via-transparent to-black/60" />
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="relative z-10"
@@ -51,17 +51,17 @@ export default function MobileHomeView() {
       {/* Featured Bestsellers */}
       <div className="px-6 py-16">
         <div className="flex justify-between items-end mb-10">
-           <div>
-             <span className="text-[10px] uppercase tracking-[0.3em] text-vizhu-purple font-bold mb-2 block">{t.popular}</span>
-             <h2 className="text-3xl font-serif">{t.bestsellers}</h2>
-           </div>
-           <Link href="/catalog" className="text-[10px] uppercase tracking-[0.2em] border-b-2 border-vizhu-purple font-bold pb-1">{t.allModels}</Link>
+          <div>
+            <span className="text-[10px] uppercase tracking-[0.3em] text-vizhu-purple font-bold mb-2 block">{t.popular}</span>
+            <h2 className="text-3xl font-serif">{t.bestsellers}</h2>
+          </div>
+          <Link href="/catalog" className="text-[10px] uppercase tracking-[0.2em] border-b-2 border-vizhu-purple font-bold pb-1">{t.allModels}</Link>
         </div>
-        
+
         <div className="grid grid-cols-2 gap-6">
           {featured.map((product, idx) => (
-            <motion.div 
-              key={product.id} 
+            <motion.div
+              key={product.id}
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
@@ -100,7 +100,7 @@ export default function MobileHomeView() {
         <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl" />
         <div className="relative z-10 text-center">
           <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-             <span className="text-2xl">🪄</span>
+            <span className="text-2xl">🪄</span>
           </div>
           <h2 className="text-3xl font-serif mb-4">{t.aiQuiz}</h2>
           <p className="text-xs font-light leading-relaxed mb-8 opacity-70 italic max-w-xs mx-auto">
@@ -115,14 +115,14 @@ export default function MobileHomeView() {
       {/* Newsletter */}
       <div className="px-6 py-20">
         <div className="bg-card rounded-4xl p-10 border border-border/50 text-center shadow-sm">
-            <h3 className="text-xl font-serif mb-4">{t.subscribe}</h3>
-            <p className="text-xs font-light mb-8 opacity-60 italic">{t.subscribeDesc}</p>
-            <div className="flex bg-secondary/30 rounded-2xl p-2">
-              <input type="email" placeholder="Email" className="bg-transparent flex-1 py-3 px-4 text-xs focus:outline-none placeholder:opacity-40" />
-              <button className="bg-foreground text-background px-6 py-3 rounded-xl text-[10px] uppercase tracking-widest font-bold active:scale-95 transition-transform">
-                {t.ok}
-              </button>
-            </div>
+          <h3 className="text-xl font-serif mb-4">{t.subscribe}</h3>
+          <p className="text-xs font-light mb-8 opacity-60 italic">{t.subscribeDesc}</p>
+          <div className="flex bg-secondary/30 rounded-2xl p-2">
+            <input type="email" placeholder="Email" className="bg-transparent flex-1 py-3 px-4 text-xs focus:outline-none placeholder:opacity-40" />
+            <button className="bg-foreground text-background px-6 py-3 rounded-xl text-[10px] uppercase tracking-widest font-bold active:scale-95 transition-transform">
+              {t.ok}
+            </button>
+          </div>
         </div>
       </div>
     </div>

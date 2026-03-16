@@ -8,7 +8,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useAssistantStore } from '@/stores/assistantStore';
 import { useCartStore } from '@/stores/cartStore';
 import VirtualMirror from '@/components/shared/VirtualMirror';
-import { products } from '@/data/products';
+import { getProducts } from '@/lib/db';
+import { Product } from '@/types';
 
 export default function AssistantPage() {
   const {
@@ -20,15 +21,19 @@ export default function AssistantPage() {
   } = useAssistantStore();
 
   const addItem = useCartStore((s) => s.addItem);
-  const [input, setInput] = useState('');
+  const [dbProducts, setDbProducts] = useState<Product[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    getProducts().then(setDbProducts);
+  }, []);
 
   // Close the floating widget when on the full-page assistant
   useEffect(() => { setOpen(false); }, [setOpen]);
   useEffect(() => { messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
 
-  const selectedProduct = products.find(p => p.id === selectedProductId) || products[0];
+  const selectedProduct = dbProducts.find(p => p.id === selectedProductId) || (dbProducts.length > 0 ? dbProducts[0] : null);
 
   const sendMessage = async (text?: string) => {
     const msg = text || input.trim();
@@ -110,7 +115,10 @@ export default function AssistantPage() {
       }
 
       // After streaming is done, parse product mentions for action buttons
-      const mentionedProducts = products.filter((p) => fullContent.includes(p.name));
+      const mentionedProducts = dbProducts.filter((p) => 
+        fullContent.toLowerCase().includes(p.name.toLowerCase()) ||
+        fullContent.toLowerCase().includes(p.brand.toLowerCase())
+      );
       const actions = mentionedProducts.slice(0, 3).map((p) => ({
         type: 'addToCart' as const,
         label: p.name,
@@ -185,7 +193,7 @@ export default function AssistantPage() {
   };
 
   const handleAddToCart = (productId: string) => {
-    const product = products.find(p => p.id === productId);
+    const product = dbProducts.find(p => p.id === productId);
     if (product) {
       addItem(product, product.colors[0]);
       addMessage({
@@ -383,11 +391,7 @@ export default function AssistantPage() {
         </div>
       </div>
 
-      <VirtualMirror
-        isOpen={isMirrorOpen}
-        onClose={() => setMirrorOpen(false)}
-        product={selectedProduct}
-      />
+      {/* VirtualMirror is now global in layout.tsx */}
     </div>
   );
 }

@@ -11,7 +11,7 @@ const getAI = () => {
 
 async function getCurrentProductContext() {
   const products = await getProducts();
-  return products.map(p => `- ${p.name} (${p.brand}): ${p.price} сом, стиль ${p.shape}, материал ${p.material}, категория ${p.category}`).join('\n');
+  return products.map(p => `- [ID: ${p.id}] ${p.name} (${p.brand}): ${p.price} сом, стиль ${p.shape}, материал ${p.material}, категория ${p.category}`).join('\n');
 }
 
 const BASE_SYSTEM_PROMPT = `Role: You are "OptiCare AI", an expert virtual optician, stylist, and customer success assistant for the "VIZHU" online eyewear store in Karakol, Kyrgyzstan.
@@ -60,7 +60,7 @@ export async function chatWithGemini(userMessage: string, history: { role: strin
   try {
     const productContext = await getCurrentProductContext();
     const chat = getAI().chats.create({
-      model: 'gemini-2.0-flash',
+      model: 'gemini-2.5-flash',
       config: {
         systemInstruction: getSystemPrompt(language, productContext),
         maxOutputTokens: 1024,
@@ -88,7 +88,7 @@ export async function chatWithGeminiStream(userMessage: string, history: { role:
   try {
     const productContext = await getCurrentProductContext();
     const chat = getAI().chats.create({
-      model: 'gemini-2.0-flash',
+      model: 'gemini-2.5-flash',
       config: {
         systemInstruction: getSystemPrompt(language, productContext),
         maxOutputTokens: 1024,
@@ -120,7 +120,7 @@ export async function chatWithGeminiVision(
   try {
     const productContext = await getCurrentProductContext();
     const chat = getAI().chats.create({
-      model: 'gemini-2.0-flash',
+      model: 'gemini-2.5-flash',
       config: {
         systemInstruction: getSystemPrompt(language, productContext),
         maxOutputTokens: 1500,
@@ -175,7 +175,7 @@ export async function getQuizRecommendations(answers: Record<string, string>) {
     const productContext = await getCurrentProductContext();
     const prompt = `Подбери 3-5 оправ. Параметры: ${JSON.stringify(answers)}. Ассортимент: ${productContext}`;
     const chat = getAI().chats.create({
-      model: 'gemini-2.0-flash',
+      model: 'gemini-2.5-flash',
       config: {
         systemInstruction: 'Ты — эксперт-оптик. Помоги подобрать очки.',
         maxOutputTokens: 1024,

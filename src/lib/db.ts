@@ -13,14 +13,20 @@ export async function getProducts(): Promise<Product[]> {
       .select('*')
       .order('created_at', { ascending: false });
 
-    if (error || !data) {
-      return [];
+    if (error) {
+      console.error('Error fetching products from Supabase:', error);
+      return staticProducts;
+    }
+
+    if (!data || data.length === 0) {
+      console.log('No products found in database, falling back to static products.');
+      return staticProducts;
     }
 
     return data.map(mapDbProductToFrontend);
   } catch (err) {
     console.error('Error fetching products from Supabase:', err);
-    return [];
+    return staticProducts;
   }
 }
 

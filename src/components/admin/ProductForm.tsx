@@ -28,7 +28,7 @@ export default function ProductForm({
   const [name, setName] = useState(initialData?.name || '');
   const [brand, setBrand] = useState(initialData?.brand || '');
   const [price, setPrice] = useState(initialData?.price?.toString() || '');
-  const [category, setCategory] = useState(initialData?.category || 'Очки для зрения');
+  const [category, setCategory] = useState(initialData?.category || 'eyeglasses');
   const [description, setDescription] = useState(initialData?.description || '');
   const [shape, setShape] = useState(initialData?.shape || 'Квадратная');
   const [material, setMaterial] = useState(initialData?.material || 'Пластик');
@@ -113,7 +113,18 @@ export default function ProductForm({
         quantity: parseInt(quantity) || 0,
         colors,
         images,
-        slug: initialData?.slug || name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''),
+        slug: initialData?.slug || (name 
+          ? name.toLowerCase()
+              .replace(/[а-яё]/g, (char: string) => {
+                const map: any = {
+                  'а':'a','б':'b','в':'v','г':'g','д':'d','е':'e','ё':'yo','ж':'zh','з':'z','и':'i','й':'y','к':'k','л':'l','м':'m','н':'n','о':'o',
+                  'п':'p','р':'r','с':'s','т':'t','у':'u','ф':'f','х':'kh','ц':'ts','ч':'ch','ш':'sh','щ':'shch','ъ':'','ы':'y','ь':'','э':'e','ю':'yu','я':'ya'
+                };
+                return map[char] || char;
+              })
+              .replace(/[^a-z0-9]+/g, '-')
+              .replace(/(^-|-$)+/g, '') || `product-${Date.now()}`
+          : `product-${Date.now()}`),
       };
 
       if (initialData?.id) {

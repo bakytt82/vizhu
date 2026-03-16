@@ -8,7 +8,8 @@ import { useAssistantStore } from '@/stores/assistantStore';
 import { useCartStore } from '@/stores/cartStore';
 import { useLanguageStore } from '@/stores/languageStore';
 import { translations } from '@/lib/translations';
-import { products } from '@/data/products';
+import { getProducts } from '@/lib/db';
+import { Product } from '@/types';
 import Link from 'next/link';
 import type { ChatMessage } from '@/types';
 
@@ -44,9 +45,14 @@ export default function ChatWidget() {
 
   const addItem = useCartStore((s) => s.addItem);
   const [input, setInput] = useState('');
+  const [dbProducts, setDbProducts] = useState<Product[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    getProducts().then(setDbProducts);
+  }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -135,8 +141,16 @@ export default function ChatWidget() {
         }
       }
 
+      // If text is still empty but we have tools/actions, provide a fallback message
+      if (!fullContent.trim()) {
+        fullContent = "Вот мои рекомендации для вас:";
+      }
+
       // After streaming is done, parse product mentions
-      const mentionedProducts = products.filter((p) => fullContent.includes(p.name));
+      const mentionedProducts = dbProducts.filter((p) => 
+        fullContent.toLowerCase().includes(p.name.toLowerCase()) ||
+        fullContent.toLowerCase().includes(p.brand.toLowerCase())
+      );
       const actions = mentionedProducts.slice(0, 2).map((p) => ({
         type: 'addToCart' as const,
         label: `🛒 ${p.name}`,
@@ -213,7 +227,7 @@ export default function ChatWidget() {
   };
 
   const handleAddToCart = (productId: string) => {
-    const product = products.find((p) => p.id === productId);
+    const product = dbProducts.find((p) => p.id === productId);
     if (product) {
       addItem(product, product.colors[0]);
       addMessage({

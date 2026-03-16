@@ -5,6 +5,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import MobileNav from "@/components/layout/MobileNav";
 import ChatWidget from "@/components/shared/ChatWidget";
+import GlobalMirror from "@/components/shared/GlobalMirror";
 import Script from "next/script";
 
 const inter = Inter({
@@ -70,6 +71,7 @@ export default function RootLayout({
         <Footer />
         <MobileNav />
         <ChatWidget />
+        <GlobalMirror />
         <Script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" strategy="beforeInteractive" />
         <Script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" strategy="beforeInteractive" />
       </body>
