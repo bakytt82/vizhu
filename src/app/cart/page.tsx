@@ -132,15 +132,17 @@ export default function CartPage() {
                           >
                             {item.product.name}
                           </Link>
-                          <div className="flex items-center gap-2 mt-3">
-                            <div
-                              className="w-4 h-4 rounded-full border border-black/5"
-                              style={{ backgroundColor: item.selectedColor.hex }}
-                            />
-                            <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
-                              {getLangText(item.selectedColor.name as any, language)}
-                            </span>
-                          </div>
+                          {item.selectedColor && (
+                            <div className="flex items-center gap-2 mt-3">
+                              <div
+                                className="w-4 h-4 rounded-full border border-black/5"
+                                style={{ backgroundColor: item.selectedColor.hex }}
+                              />
+                              <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">
+                                {getLangText(item.selectedColor.name as any, language)}
+                              </span>
+                            </div>
+                          )}
                         </div>
                         <button
                           onClick={() => removeItem(item.product.id)}
