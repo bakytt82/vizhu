@@ -149,10 +149,12 @@ export default function CheckoutPage() {
                 </h2>
                 <div className="space-y-4 mb-8 max-h-[300px] overflow-y-auto pr-2 no-scrollbar">
                   {items.map((item) => (
-                    <div key={item.product.id} className="flex justify-between items-start gap-4">
+                    <div key={`${item.product.id}-${item.selectedColor?.hex || 'default'}`} className="flex justify-between items-start gap-4">
                       <div className="flex-1">
                         <p className="font-medium text-sm line-clamp-2 leading-snug">{item.product.name}</p>
-                        <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-1">x{item.quantity} · {getLangText(item.selectedColor.name as any, language)}</p>
+                        <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-1">
+                          x{item.quantity} {item.selectedColor && `· ${getLangText(item.selectedColor.name as any, language)}`}
+                        </p>
                       </div>
                       <span className="font-display font-bold text-sm whitespace-nowrap">
                         {formatPrice(item.product.price * item.quantity, t.som)}
