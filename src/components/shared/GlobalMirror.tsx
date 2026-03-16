@@ -10,9 +10,14 @@ export default function GlobalMirror() {
   const { isMirrorOpen, setMirrorOpen, selectedProductId } = useAssistantStore();
   const [dbProducts, setDbProducts] = useState<Product[]>([]);
 
+  const [isMounted, setIsMounted] = useState(false);
+
   useEffect(() => {
+    setIsMounted(true);
     getProducts().then(setDbProducts);
   }, []);
+
+  if (!isMounted) return null;
 
   const selectedProduct = dbProducts.find(p => p.id === selectedProductId);
 
@@ -20,7 +25,7 @@ export default function GlobalMirror() {
     <VirtualMirror
       isOpen={isMirrorOpen}
       onClose={() => setMirrorOpen(false)}
-      product={selectedProduct}
+      product={selectedProduct || undefined}
     />
   );
 }
