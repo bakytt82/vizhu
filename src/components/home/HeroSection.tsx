@@ -32,7 +32,7 @@ export default function HeroSection() {
           transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
         >
           <span className="inline-block text-[10px] uppercase tracking-[0.5em] text-white/60 mb-8">
-            {t.newCollection} 2024
+            {t.newCollection} {new Date().getFullYear()}
           </span>
 
           <h1 className="text-5xl sm:text-7xl lg:text-8xl font-serif text-white leading-[1.1] mb-10">
