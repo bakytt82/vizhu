@@ -255,7 +255,7 @@ export default function ChatWidget() {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0, opacity: 0 }}
             onClick={toggleOpen}
-            className="fixed bottom-28 right-4 lg:bottom-8 lg:right-8 z-50 w-14 h-14 rounded-full bg-vizhu-purple text-white shadow-2xl shadow-vizhu-purple/30 flex items-center justify-center hover:scale-110 active:scale-95 transition-transform"
+            className="fixed bottom-56 right-4 lg:bottom-8 lg:right-8 z-50 w-14 h-14 rounded-full bg-vizhu-purple text-white shadow-2xl shadow-vizhu-purple/30 flex items-center justify-center hover:scale-110 active:scale-95 transition-transform"
           >
             <MessageCircle size={24} />
             <span className="absolute -top-1 -right-1 w-3 h-3 bg-vizhu-orange rounded-full animate-pulse" />
