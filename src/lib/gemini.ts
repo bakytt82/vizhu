@@ -3,10 +3,11 @@ import { getProducts } from './db';
 import { Product } from '@/types';
 
 const getAI = () => {
-  if (!process.env.GEMINI_API_KEY) {
-    console.warn("⚠️ У ВАС НЕ УКАЗАН GEMINI_API_KEY В ПЕРЕМЕННЫХ ОКРУЖЕНИЯ!");
+  const apiKey = process.env.API_KEY || process.env.AI_STUDIO_API_KEY || process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
+  if (!apiKey) {
+    console.warn("⚠️ У ВАС НЕ УКАЗАНЫ ПЕРЕМЕННЫЕ ОКРУЖЕНИЯ ДЛЯ AI STUDIO / GEMINI!");
   }
-  return new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
+  return new GoogleGenAI({ apiKey: apiKey || '' });
 };
 
 async function getCurrentProductContext() {
@@ -20,7 +21,7 @@ Your Goal: Help customers find the perfect eyewear through professional consulta
 
 Store Info:
 - Address: г. Каракол, ул. Токтогула 259/8
-- Phone: +996 772 18-88-02`;
+- Phone: +996 772 18-88-02, +996 500 18-88-02`;
 
 function getSystemPrompt(language: string = 'ru', productContext: string) {
   return `${BASE_SYSTEM_PROMPT}
@@ -28,33 +29,10 @@ function getSystemPrompt(language: string = 'ru', productContext: string) {
 Current Inventory:
 ${productContext}
 
-Core Responsibilities:
-1. Style Consultation: Recommend specific frames from inventory.
-2. Virtual Mirror Guide: Use "tryOnFrame" tool with correct product ID when user wants to try on glasses.
-
 CRITICAL INSTRUCTION: You MUST communicate with the user entirely in the language corresponding to this language code: '${language}' (e.g. 'ru' for Russian, 'en' for English, 'kg' for Kyrgyz language). Do not use any other language.`;
 }
 
-export const TOOLS: any = [
-  {
-    functionDeclarations: [
-      {
-        name: 'tryOnFrame',
-        description: 'Opens the Virtual Mirror to allow the user to virtually try on a specific frame.',
-        parameters: {
-          type: 'object',
-          properties: {
-            frameId: {
-              type: 'string',
-              description: 'The unique ID of the frame to try on.',
-            },
-          },
-          required: ['frameId'],
-        },
-      },
-    ],
-  },
-];
+export const TOOLS: any = [];
 
 export async function chatWithGemini(userMessage: string, history: { role: string; content: string }[], language: string = 'ru') {
   try {

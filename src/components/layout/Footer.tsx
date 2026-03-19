@@ -75,13 +75,22 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-medium mb-6 font-serif">{t.contacts}</h3>
             <div className="flex flex-col gap-4">
-              <a
-                href={`tel:${SITE_CONFIG.phoneClean}`}
-                className="flex items-start gap-3 text-white/50 hover:text-white transition-colors group"
-              >
-                <Phone size={14} className="mt-0.5 text-white/30" />
-                <span className="text-[11px]">{SITE_CONFIG.phone}</span>
-              </a>
+              <div className="flex flex-col gap-2">
+                <a
+                  href={`tel:${SITE_CONFIG.phoneClean}`}
+                  className="flex items-start gap-3 text-white/50 hover:text-white transition-colors group"
+                >
+                  <Phone size={14} className="mt-0.5 text-white/30" />
+                  <span className="text-[11px]">{SITE_CONFIG.phone}</span>
+                </a>
+                <a
+                  href={`tel:${SITE_CONFIG.phoneClean2}`}
+                  className="flex items-start gap-3 text-white/50 hover:text-white transition-colors group"
+                >
+                  <div className="w-[14px] shrink-0" />
+                  <span className="text-[11px]">{SITE_CONFIG.phone2}</span>
+                </a>
+              </div>
               <div className="flex items-start gap-3 text-white/50">
                 <MapPin size={14} className="mt-0.5 text-white/30 shrink-0" />
                 <span className="text-[11px]">{t.address_value}</span>

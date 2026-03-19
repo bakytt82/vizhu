@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronLeft, ShoppingBag, Share2, Eye, Heart, Star, MessageSquare, Check } from 'lucide-react';
+import { ChevronLeft, ShoppingBag, Share2, Eye, Heart, Star, MessageSquare, Check, Wand2 } from 'lucide-react';
 import { Product } from '@/types';
 import { formatPrice, cn, getLangText } from '@/lib/utils';
 import { useState } from 'react';
@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { useLanguageStore } from '@/stores/languageStore';
 import { useWishlistStore } from '@/stores/wishlistStore';
 import { translations } from '@/lib/translations';
+import { useAssistantStore } from '@/stores/assistantStore';
 import ProductWatermark from '@/components/shared/ProductWatermark';
 
 interface MobileProductDetailViewProps {
@@ -75,12 +76,8 @@ export default function MobileProductDetailView({
               </div>
             ))}
           </div>
-
+ 
           <ProductWatermark size="md" className="top-6 left-6" />
-          
-          <button className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-foreground text-background px-8 py-4 rounded-2xl flex items-center gap-3 text-[10px] font-bold uppercase tracking-widest shadow-2xl active:scale-95 transition-transform z-10">
-             <Eye size={18} /> {t.seeItOnYou}
-          </button>
         </div>
 
         {/* Dash Indicators */}

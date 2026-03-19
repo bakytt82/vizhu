@@ -62,7 +62,7 @@ export interface Review {
 }
 
 export interface ChatAction {
-  type: 'addToCart' | 'tryMirror' | 'openLink';
+  type: 'addToCart' | 'openLink';
   label: string;
   productId?: string;
   url?: string;

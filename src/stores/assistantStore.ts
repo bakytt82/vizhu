@@ -18,10 +18,7 @@ interface AssistantState {
 
   // Prescription data (from OCR)
   prescription: Prescription | null;
-
-  // Virtual Mirror state
   selectedProductId: string | null;
-  isMirrorOpen: boolean;
 
   // Actions
   addMessage: (msg: ChatMessage) => void;
@@ -33,7 +30,6 @@ interface AssistantState {
   setUserPreference: (key: string, value: string) => void;
   setPrescription: (rx: Prescription | null) => void;
   setSelectedProductId: (id: string | null) => void;
-  setMirrorOpen: (open: boolean) => void;
   clearChat: (initialMessage: ChatMessage) => void;
   initChat: (initialMessage: ChatMessage) => void;
 }
@@ -45,7 +41,6 @@ export const useAssistantStore = create<AssistantState>((set) => ({
   userPreferences: {},
   prescription: null,
   selectedProductId: null,
-  isMirrorOpen: false,
 
   addMessage: (msg) => set((s) => ({ messages: [...s.messages, msg] })),
   updateMessage: (id, content) =>
@@ -62,7 +57,6 @@ export const useAssistantStore = create<AssistantState>((set) => ({
     set((s) => ({ userPreferences: { ...s.userPreferences, [key]: value } })),
   setPrescription: (prescription) => set({ prescription }),
   setSelectedProductId: (selectedProductId) => set({ selectedProductId }),
-  setMirrorOpen: (isMirrorOpen) => set({ isMirrorOpen }),
   clearChat: (initialMessage) => set({ messages: [initialMessage], userPreferences: {}, prescription: null }),
   initChat: (initialMessage) => set((state) => {
     if (state.messages.length === 0) {

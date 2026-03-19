@@ -49,7 +49,6 @@ export default function WishlistPage() {
         <MobileWishlistView 
           items={items} 
           removeItem={removeItem} 
-          toggleWishlist={toggleWishlist} 
         />
       </>
     );
@@ -125,7 +124,6 @@ export default function WishlistPage() {
       <MobileWishlistView 
         items={items} 
         removeItem={removeItem} 
-        toggleWishlist={toggleWishlist} 
       />
     </>
   );

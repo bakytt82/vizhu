@@ -1,8 +1,8 @@
 'use client';
 
-import { ChevronLeft, ShoppingBag, Heart, Trash2, ShoppingCart } from 'lucide-react';
+import { ChevronLeft, ShoppingBag, Trash2, ShoppingCart } from 'lucide-react';
 import { Product } from '@/types';
-import { formatPrice, cn, getLangText } from '@/lib/utils';
+import { formatPrice, cn } from '@/lib/utils';
 import Link from 'next/link';
 import { useLanguageStore } from '@/stores/languageStore';
 import { translations } from '@/lib/translations';
@@ -11,13 +11,11 @@ import { useCartStore } from '@/stores/cartStore';
 interface MobileWishlistViewProps {
   items: Product[];
   removeItem: (id: string) => void;
-  toggleWishlist: (product: Product) => void;
 }
 
 export default function MobileWishlistView({
   items,
   removeItem,
-  toggleWishlist,
 }: MobileWishlistViewProps) {
   const { language } = useLanguageStore();
   const t = translations[language];

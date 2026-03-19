@@ -108,12 +108,6 @@ export default function FeaturedProducts() {
                       <ShoppingBag size={16} />
                       {t.addToCart}
                     </button>
-                    <div className="mt-3 flex justify-center gap-4 text-white/80 transform translate-y-4 group-hover:translate-y-0 delay-75 duration-500">
-                      <div className="flex items-center gap-1.5 text-[10px] uppercase tracking-widest font-bold">
-                        <Eye size={14} />
-                        {t.tryOn}
-                      </div>
-                    </div>
                   </div>
                 </div>
 

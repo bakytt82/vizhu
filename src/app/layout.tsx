@@ -5,7 +5,6 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import MobileNav from "@/components/layout/MobileNav";
 import ChatWidget from "@/components/shared/ChatWidget";
-import GlobalMirror from "@/components/shared/GlobalMirror";
 import Script from "next/script";
 
 const inter = Inter({
@@ -32,12 +31,11 @@ export const metadata: Metadata = {
     template: "%s | Оптика Вижу",
   },
   description:
-    "Премиальный магазин оптики в Караколе — очки на заказ за 60 минут, бесплатная проверка зрения, виртуальная примерочная с ИИ, подбор оправ. ул. Токтогула 259/8",
+    "Премиальный салон оптики в Караколе — очки на заказ за 60 минут, бесплатная проверка зрения, индивидуальный подбор оправ. ул. Токтогула 259/8",
   keywords: [
     "оптика Каракол",
     "очки на заказ",
     "проверка зрения бесплатно",
-    "виртуальная примерочная",
     "подбор оправ",
     "изготовление очков за 60 минут",
     "купить очки Каракол",
@@ -52,7 +50,7 @@ export const metadata: Metadata = {
     siteName: "Оптика Вижу",
     title: "Оптика Вижу — Премиальный салон оптики в Караколе",
     description:
-      "Очки на заказ за 60 минут. Бесплатная проверка зрения. Виртуальная примерочная с ИИ.",
+      "Очки на заказ за 60 минут. Бесплатная проверка зрения. Индивидуальный подбор оправ.",
   },
 };
 
@@ -66,14 +64,38 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${playfair.variable} ${outfit.variable} font-sans antialiased`}
       >
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  const manual = localStorage.getItem('vizhu-theme-manual');
+                  let theme = '';
+                  if (manual === 'true') {
+                    const stored = localStorage.getItem('vizhu-theme');
+                    if (stored) {
+                      theme = JSON.parse(stored).state.theme;
+                    }
+                  }
+                  if (!theme) {
+                    const hour = new Date().getHours();
+                    theme = (hour >= 7 && hour < 19) ? 'light' : 'dark';
+                  }
+                  if (theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
         <Header />
         <main className="min-h-screen pb-20 lg:pb-0">{children}</main>
         <Footer />
         <MobileNav />
         <ChatWidget />
-        <GlobalMirror />
-        <Script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js" strategy="beforeInteractive" />
-        <Script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" strategy="beforeInteractive" />
       </body>
     </html>
   );

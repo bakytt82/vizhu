@@ -7,7 +7,8 @@ export const maxDuration = 60; // Vercel hobby plan max is 10s for functions, or
 
 export async function GET() {
   try {
-    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
+    const apiKey = process.env.AI_STUDIO_API_KEY || process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || '';
+    const ai = new GoogleGenAI({ apiKey });
     const response = await ai.models.list();
     const models = [];
     for await (const m of response) {

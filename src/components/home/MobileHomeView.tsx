@@ -42,9 +42,11 @@ export default function MobileHomeView() {
         >
           <span className="block text-[10px] uppercase tracking-[0.5em] mb-6 opacity-80 font-bold">{t.newCollection}</span>
           <h1 className="text-4xl font-serif mb-8 leading-tight">{t.artOfSeeing}</h1>
-          <Link href="/catalog" className="inline-block px-10 py-4 bg-white text-black text-[10px] uppercase tracking-[0.3em] font-bold rounded-2xl shadow-2xl active:scale-95 transition-transform">
-            {t.watch}
-          </Link>
+          <div className="flex flex-col gap-3">
+            <Link href="/catalog" className="inline-block px-10 py-4 bg-white text-black text-[10px] uppercase tracking-[0.3em] font-bold rounded-2xl shadow-2xl active:scale-95 transition-transform">
+              {t.watch}
+            </Link>
+          </div>
         </motion.div>
       </div>
 

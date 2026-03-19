@@ -44,16 +44,16 @@ export default function HeroSection() {
             {t.footerBrand.split('. ')[1]}
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center">
             <Link
               href="/catalog"
-              className="group relative px-10 py-4 bg-white text-black text-[10px] uppercase tracking-[0.3em] font-bold transition-all hover:bg-transparent hover:text-white border border-white"
+              className="w-full sm:w-auto px-10 py-4 bg-white text-black text-[10px] uppercase tracking-[0.3em] font-bold transition-all hover:bg-transparent hover:text-white border border-white text-center"
             >
               {t.catalog}
             </Link>
             <Link
               href="/quiz"
-              className="group relative px-10 py-4 border border-white/30 text-white text-[10px] uppercase tracking-[0.3em] font-bold transition-all hover:bg-white hover:text-black"
+              className="w-full sm:w-auto px-10 py-4 border border-white/30 text-white text-[10px] uppercase tracking-[0.3em] font-bold transition-all hover:bg-white hover:text-black text-center"
             >
               {t.aiQuiz}
             </Link>

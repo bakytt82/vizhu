@@ -7,7 +7,7 @@ import type { ChatMessage } from '@/types';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAssistantStore } from '@/stores/assistantStore';
 import { useCartStore } from '@/stores/cartStore';
-import VirtualMirror from '@/components/shared/VirtualMirror';
+import { useLanguageStore } from '@/stores/languageStore';
 import { getProducts } from '@/lib/db';
 import { Product } from '@/types';
 
@@ -15,11 +15,10 @@ export default function AssistantPage() {
   const {
     messages, isLoading,
     addMessage, setMessages, setLoading,
-    isMirrorOpen, setMirrorOpen,
-    selectedProductId, setSelectedProductId,
     setOpen,
   } = useAssistantStore();
 
+  const { language } = useLanguageStore();
   const addItem = useCartStore((s) => s.addItem);
   const [dbProducts, setDbProducts] = useState<Product[]>([]);
   const [input, setInput] = useState('');
@@ -34,7 +33,7 @@ export default function AssistantPage() {
   useEffect(() => { setOpen(false); }, [setOpen]);
   useEffect(() => { messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
 
-  const selectedProduct = dbProducts.find(p => p.id === selectedProductId) || (dbProducts.length > 0 ? dbProducts[0] : null);
+  // const selectedProduct = dbProducts.find(p => p.id === selectedProductId) || (dbProducts.length > 0 ? dbProducts[0] : null);
 
   const sendMessage = async (text?: string) => {
     const msg = text || input.trim();
@@ -47,26 +46,28 @@ export default function AssistantPage() {
       timestamp: new Date(),
     };
 
-    addMessage(userMessage);
-    setInput('');
-    setLoading(true);
-
-    // Initial assistant message for streaming
     const assistantMsgId = (Date.now() + 1).toString();
-    const assistantMessage: ChatMessage = {
-      id: assistantMsgId,
-      role: 'assistant',
-      content: '',
-      timestamp: new Date(),
-    };
-    addMessage(assistantMessage);
 
     try {
+      // Create history BEFORE adding the new messages to state
       const history = messages.map((m) => ({ role: m.role, content: m.content }));
+      
+      addMessage(userMessage);
+      setInput('');
+      setLoading(true);
+
+      const assistantMessage: ChatMessage = {
+        id: assistantMsgId,
+        role: 'assistant',
+        content: '',
+        timestamp: new Date(),
+      };
+      addMessage(assistantMessage);
+
       const res = await fetch('/api/gemini', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: msg, history }),
+        body: JSON.stringify({ message: msg, history, language }),
       });
 
       if (!res.ok) throw new Error('Failed to fetch');
@@ -92,12 +93,7 @@ export default function AssistantPage() {
                 const jsonStr = line.replace('__TOOL_CALL__:', '');
                 try {
                   const toolCall = JSON.parse(jsonStr);
-                  if (toolCall.name === 'tryOnFrame') {
-                    const frameId = toolCall.args.frameId;
-                    console.log('Assistant AI triggered tray-on for:', frameId);
-                    setSelectedProductId(frameId);
-                    setMirrorOpen(true);
-                  }
+                  // Tool calls for try-on are disabled
                 } catch (e) {
                   console.error('Error parsing AI tool call in AssistantPage:', e);
                 }
@@ -136,7 +132,7 @@ export default function AssistantPage() {
     } catch {
       useAssistantStore.getState().updateMessage(
         assistantMsgId,
-        'Извините, не удалось получить ответ. Попробуйте позже или позвоните нам: +996 772 18-88-02'
+        'Извините, не удалось получить ответ. Попробуйте позже или позвоните нам: +996 772 18-88-02, +996 500 18-88-02'
       );
     } finally {
       setLoading(false);
@@ -170,6 +166,7 @@ export default function AssistantPage() {
             image: base64,
             mimeType,
             history,
+            language,
           }),
         });
         const data = await res.json();
@@ -206,11 +203,6 @@ export default function AssistantPage() {
     }
   };
 
-  const handleTryMirror = (productId: string) => {
-    setSelectedProductId(productId);
-    setMirrorOpen(true);
-  };
-
   return (
     <div className="pt-20 lg:pt-24 pb-28 lg:pb-4 min-h-screen flex flex-col bg-background">
       <div className="max-w-3xl mx-auto px-4 w-full flex-1 flex flex-col">
@@ -245,7 +237,8 @@ export default function AssistantPage() {
               >
                 <div className={cn(
                   "w-8 h-8 rounded-full flex items-center justify-center shrink-0 border border-border/50 shadow-sm",
-                  msg.role === 'user' ? "bg-white text-black" : "bg-vizhu-purple text-white"
+                  msg.role === 'user' ? "bg-white text-black" : "bg-vizhu-purple text-white",
+                  msg.role === 'assistant' && !msg.content && !msg.imageUrl && "opacity-0"
                 )}>
                   {msg.role === 'user' ? <User size={14} /> : <Bot size={14} />}
                 </div>
@@ -255,7 +248,8 @@ export default function AssistantPage() {
                     'max-w-[85%] sm:max-w-[75%] rounded-3xl px-5 py-4 text-sm leading-relaxed shadow-sm',
                     msg.role === 'user'
                       ? 'bg-vizhu-purple text-white rounded-br-none'
-                      : 'bg-card border border-border/50 text-foreground rounded-bl-none'
+                      : 'bg-card border border-border/50 text-foreground rounded-bl-none',
+                    msg.role === 'assistant' && !msg.content && !msg.imageUrl && !msg.actions && "hidden"
                   )}
                 >
                   {msg.imageUrl && (
@@ -281,13 +275,6 @@ export default function AssistantPage() {
                           >
                             <ShoppingBag size={10} />
                             В корзину
-                          </button>
-                          <button
-                            onClick={() => action.productId && handleTryMirror(action.productId)}
-                            className="px-3 py-1.5 bg-vizhu-purple/10 text-vizhu-purple rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-vizhu-purple hover:text-white transition-all flex items-center gap-1.5"
-                          >
-                            <Camera size={10} />
-                            Примерить
                           </button>
                         </div>
                       ))}
@@ -328,16 +315,11 @@ export default function AssistantPage() {
               { text: 'Подбери очки по форме лица', icon: <Sparkles size={14} /> },
               { text: 'Нужна помощь со стилем', icon: <Sparkles size={14} /> },
               { text: 'Расскажи про покрытие линз', icon: <MessageCircle size={14} /> },
-              { text: 'Открыть Виртуальное Зеркало', icon: <Camera size={14} /> },
             ].map((q) => (
               <button
                 key={q.text}
                 onClick={() => {
-                  if (q.text.includes('Зеркало')) {
-                    setMirrorOpen(true);
-                  } else {
-                    sendMessage(q.text);
-                  }
+                  sendMessage(q.text);
                 }}
                 className="px-5 py-2.5 bg-card border border-border/50 hover:border-vizhu-purple/40 hover:bg-vizhu-purple/5 rounded-full text-xs font-medium transition-all flex items-center gap-2 shadow-sm"
               >
@@ -392,7 +374,6 @@ export default function AssistantPage() {
         </div>
       </div>
 
-      {/* VirtualMirror is now global in layout.tsx */}
-    </div>
+</div>
   );
 }

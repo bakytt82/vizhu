@@ -18,7 +18,7 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const { theme, toggleTheme } = useThemeStore();
+  const { theme, toggleTheme, initializeTheme } = useThemeStore();
   const { language, setLanguage } = useLanguageStore();
   const t = translations[language];
   const itemCount = useCartStore((s) => s.items.reduce((sum, item) => sum + item.quantity, 0));
@@ -26,10 +26,11 @@ export default function Header() {
 
   useEffect(() => {
     setIsMounted(true);
+    initializeTheme(); // Ensure theme is correct on mount
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [initializeTheme]);
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
@@ -197,9 +198,14 @@ export default function Header() {
               <MessageCircle size={16} strokeWidth={1} />
               WhatsApp
             </a>
-            <p className="mt-8 text-[11px] text-white/40 uppercase tracking-widest px-1">
-              {SITE_CONFIG.phone}
-            </p>
+            <div className="mt-8">
+              <p className="text-[11px] text-white/40 uppercase tracking-widest px-1">
+                {SITE_CONFIG.phone}
+              </p>
+              <p className="text-[11px] text-white/40 uppercase tracking-widest px-1 mt-1">
+                {SITE_CONFIG.phone2}
+              </p>
+            </div>
             <p className="text-[11px] text-white/40 uppercase tracking-widest px-1 mt-2">
               {SITE_CONFIG.address}
             </p>

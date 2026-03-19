@@ -4,7 +4,9 @@ export const SITE_CONFIG = {
   description: 'Премиальный салон оптики в Караколе — очки на заказ за 60 минут, бесплатная проверка зрения, виртуальная примерочная с ИИ',
   url: 'https://optika-vizhu.kg',
   phone: '+996 772 18-88-02',
+  phone2: '+996 500 18-88-02',
   phoneClean: '+996772188802',
+  phoneClean2: '+996500188802',
   whatsapp: 'https://wa.me/996772188802',
   address: 'г. Каракол, ул. Токтогула, 259/8',
   city: 'Каракол',
@@ -14,7 +16,7 @@ export const SITE_CONFIG = {
   instagram: 'https://instagram.com/optika_karakol',
   workHours: {
     weekdays: '09:00 — 19:00',
-    saturday: '09:00 — 18:00',
+    saturday: '09:00 — 16:00',
     sunday: '', // Handled by translation
   },
   coordinates: {

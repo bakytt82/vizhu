@@ -344,7 +344,7 @@ export default function ProductForm({
               placeholder="ID (напр. gold)"
               className="bg-background border border-border rounded-lg px-3 py-1.5 text-sm min-w-[100px]"
             />
-            <div className="flex items-center gap-2 bg-background border border-border rounded-lg px-2 py-1 flex-shrink-0">
+            <div className="flex items-center gap-2 bg-background border border-border rounded-lg px-2 py-1 shrink-0">
               <input
                 type="color"
                 value={newColorHex}
@@ -356,7 +356,7 @@ export default function ProductForm({
             <button
               type="button"
               onClick={addColor}
-              className="bg-vizhu-purple text-white p-1.5 rounded-lg hover:bg-vizhu-purple-dark transition-colors flex-shrink-0"
+              className="bg-vizhu-purple text-white p-1.5 rounded-lg hover:bg-vizhu-purple-dark transition-colors shrink-0"
             >
               <Plus size={16} />
             </button>

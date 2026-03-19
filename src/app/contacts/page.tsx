@@ -40,8 +40,7 @@ export default function ContactsPage() {
           <div className="space-y-6">
             {/* Cards */}
             <div className="grid sm:grid-cols-2 gap-4">
-              <a
-                href={`tel:${SITE_CONFIG.phoneClean}`}
+              <div
                 className="bg-card rounded-2xl p-6 border card-hover group relative"
               >
                 <div className="absolute bottom-0 left-0 w-full h-1/2 bg-linear-to-t from-vizhu-purple/20 to-transparent pointer-events-none" />
@@ -49,8 +48,15 @@ export default function ContactsPage() {
                   <Phone size={22} className="text-vizhu-purple group-hover:text-white transition-colors" />
                 </div>
                 <h3 className="font-semibold mb-1">{t.contact_phone}</h3>
-                <p className="text-vizhu-purple font-medium">{SITE_CONFIG.phone}</p>
-              </a>
+                <div className="space-y-1">
+                  <a href={`tel:${SITE_CONFIG.phoneClean}`} className="block text-vizhu-purple font-medium hover:underline">
+                    {SITE_CONFIG.phone}
+                  </a>
+                  <a href={`tel:${SITE_CONFIG.phoneClean2}`} className="block text-vizhu-purple font-medium hover:underline">
+                    {SITE_CONFIG.phone2}
+                  </a>
+                </div>
+              </div>
 
               <a
                 href={SITE_CONFIG.whatsapp}

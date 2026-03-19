@@ -157,20 +157,13 @@ export default function CatalogPage() {
                   </div>
 
                   {/* Actions (always visible on small screens, on hover for desktop) */}
-                  <div className="absolute bottom-4 left-4 right-4 flex gap-2 lg:opacity-0 lg:group-hover:opacity-100 transition-all lg:translate-y-2 lg:group-hover:translate-y-0 z-20">
-                    <button
-                      onClick={(e) => { e.preventDefault(); }}
-                      className="flex-1 py-2.5 bg-vizhu-purple text-white text-[10px] uppercase tracking-widest font-bold rounded-xl flex items-center justify-center gap-1.5 hover:bg-vizhu-purple-dark transition-colors shadow-lg shadow-vizhu-purple/20"
-                    >
-                      <Eye size={14} />
-                      {t.catalog_try_on}
-                    </button>
+                  <div className="absolute bottom-4 right-4 flex gap-2 lg:opacity-0 lg:group-hover:opacity-100 transition-all lg:translate-y-2 lg:group-hover:translate-y-0 z-20">
                     <button
                        onClick={(e) => { 
                          e.preventDefault(); 
                          toggleWishlist(product);
                        }}
-                       className="w-10 h-10 bg-white dark:bg-card/80 backdrop-blur-md rounded-xl flex items-center justify-center hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors border border-border"
+                       className="w-10 h-10 bg-white dark:bg-card/80 backdrop-blur-md rounded-xl flex items-center justify-center hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors border border-border shadow-lg"
                      >
                        <Heart 
                          size={16} 

@@ -26,7 +26,7 @@ export default function ChatWidget() {
   const {
     messages, isOpen, isLoading,
     addMessage, setMessages, setLoading, toggleOpen, setOpen,
-    setMirrorOpen, setSelectedProductId, initChat,
+    initChat,
   } = useAssistantStore();
 
   const { language } = useLanguageStore();
@@ -35,7 +35,7 @@ export default function ChatWidget() {
   const getInitialMessage = (): ChatMessage => ({
     id: '0',
     role: 'assistant',
-    content: `${t.ai_initial_welcome}, ${t.ai_expert_guide}\n\n${t.ai_help_with}\n• ${t.ai_help_1}\n• ${t.ai_help_2}\n• ${t.ai_help_3}\n• ${t.ai_help_4}\n\n${t.ai_what_to_start}`,
+    content: `${t.ai_initial_welcome}, ${t.ai_expert_guide}\n\n${t.ai_help_with}\n• ${t.ai_help_1}\n• ${t.ai_help_2}\n• ${t.ai_help_3}\n\n${t.ai_what_to_start}`,
     timestamp: new Date(),
   });
 
@@ -73,22 +73,24 @@ export default function ChatWidget() {
       timestamp: new Date(),
     };
 
-    addMessage(userMessage);
-    setInput('');
-    setLoading(true);
-
-    // Initial assistant message for streaming
-    const assistantMsgId = (Date.now() + 1).toString();
-    const assistantMessage: ChatMessage = {
-      id: assistantMsgId,
-      role: 'assistant',
-      content: '',
-      timestamp: new Date(),
-    };
-    addMessage(assistantMessage);
+    const assistantMsgId = (Date.now() + 1).toString(); // Moved declaration outside try block
 
     try {
+      // Capture history BEFORE adding the new message to avoid including the current model placeholder
       const history = messages.map((m) => ({ role: m.role, content: m.content }));
+
+      addMessage(userMessage);
+      setInput('');
+      setLoading(true);
+
+      // Initial assistant message for streaming
+      const assistantMessage: ChatMessage = {
+        id: assistantMsgId,
+        role: 'assistant',
+        content: '',
+        timestamp: new Date(),
+      };
+      addMessage(assistantMessage);
       const res = await fetch('/api/gemini', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -108,7 +110,7 @@ export default function ChatWidget() {
           
           const chunk = decoder.decode(value, { stream: true });
           
-          // Detect Tool Calls
+            // Detect Tool Calls
           if (chunk.includes('__TOOL_CALL__:')) {
             const lines = chunk.split('\n');
             let textChunks = [];
@@ -118,12 +120,7 @@ export default function ChatWidget() {
                 const jsonStr = line.replace('__TOOL_CALL__:', '');
                 try {
                   const toolCall = JSON.parse(jsonStr);
-                  if (toolCall.name === 'tryOnFrame') {
-                    const frameId = toolCall.args.frameId;
-                    console.log('AI triggered tray-on for:', frameId);
-                    setSelectedProductId(frameId);
-                    setMirrorOpen(true);
-                  }
+                  // Tool calls for try-on are disabled
                 } catch (e) {
                   console.error('Error parsing AI tool call:', e);
                 }
@@ -313,7 +310,10 @@ export default function ChatWidget() {
               {messages.map((msg) => (
                 <div key={msg.id} className={cn('flex gap-2', msg.role === 'user' ? 'justify-end' : 'justify-start')}>
                   {msg.role === 'assistant' && (
-                    <div className="w-7 h-7 rounded-full bg-vizhu-purple text-white flex items-center justify-center shrink-0 mt-1">
+                    <div className={cn(
+                      "w-7 h-7 rounded-full bg-vizhu-purple text-white flex items-center justify-center shrink-0 mt-1",
+                      !msg.content && !msg.imageUrl && "opacity-0"
+                    )}>
                       <Bot size={12} />
                     </div>
                   )}
@@ -321,7 +321,8 @@ export default function ChatWidget() {
                     'max-w-[85%] rounded-2xl px-4 py-3 text-[13px] leading-relaxed',
                     msg.role === 'user'
                       ? 'bg-vizhu-purple text-white rounded-br-sm'
-                      : 'bg-muted text-foreground rounded-bl-sm'
+                      : 'bg-muted text-foreground rounded-bl-sm',
+                    msg.role === 'assistant' && !msg.content && !msg.imageUrl && !msg.actions && "hidden"
                   )}>
                     {msg.imageUrl && (
                       <img src={msg.imageUrl} alt="Uploaded" className="w-full rounded-xl mb-2 max-h-32 object-cover" />

@@ -81,7 +81,7 @@ export default function AdminPage() {
       <div className="min-h-screen flex items-center justify-center p-4">
         <div className="bg-card w-full max-w-sm p-8 rounded-3xl border border-border/50 shadow-2xl">
           <div className="text-center mb-8">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-vizhu-purple to-vizhu-orange bg-clip-text text-transparent inline-block">
+            <h1 className="text-2xl font-bold bg-linear-to-r from-vizhu-purple to-vizhu-orange bg-clip-text text-transparent inline-block">
               VIZHU ADMIN
             </h1>
             <p className="text-sm text-muted-foreground mt-2">Вход для сотрудников салона</p>

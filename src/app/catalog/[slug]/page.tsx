@@ -3,13 +3,14 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { Star, Heart, ShoppingBag, Eye, ChevronLeft, Check, Truck, Shield, RotateCcw, Loader2 } from 'lucide-react';
+import { Star, Heart, ShoppingBag, Eye, ChevronLeft, Check, Truck, Shield, RotateCcw, Loader2, Wand2 } from 'lucide-react';
 import { reviews } from '@/data/products';
 import { getProductBySlug } from '@/lib/db';
 import { Product } from '@/types';
 import { formatPrice, cn, getLangText } from '@/lib/utils';
 import { useCartStore } from '@/stores/cartStore';
 import { useWishlistStore } from '@/stores/wishlistStore';
+import { useAssistantStore } from '@/stores/assistantStore';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -142,12 +143,6 @@ export default function ProductPage() {
                     </Badge>
                   )}
                 </div>
-
-                {/* Try-on button */}
-                <button className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 px-6 py-3 bg-vizhu-purple text-white rounded-xl font-medium hover:bg-vizhu-purple-dark transition-colors shadow-lg z-10">
-                  <Eye size={18} />
-                  Примерить
-                </button>
               </div>
 
               {/* Thumbnail gallery */}
