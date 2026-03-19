@@ -41,6 +41,7 @@ export default function Header() {
       <header
         className={cn(
           'fixed top-0 left-0 right-0 z-50 transition-all duration-500',
+          pathname.startsWith('/catalog/') && pathname.split('/').length > 2 && 'hidden lg:block',
           isScrolled || pathname !== '/'
             ? 'glass shadow-lg py-2 text-white'
             : 'bg-transparent py-4 text-white'

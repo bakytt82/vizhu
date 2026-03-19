@@ -47,12 +47,7 @@ export default function MobileProductDetailView({
           <ChevronLeft size={20} />
         </Link>
         <div className="font-bold tracking-widest text-[10px] uppercase opacity-60">{product.brand}</div>
-        <div className="flex items-center gap-4">
-          <div className="relative">
-             <ShoppingBag size={20} />
-          </div>
-          <Share2 size={20} />
-        </div>
+        <div className="w-10" /> {/* Empty spacer for symmetry */}
       </header>
 
       <div className="px-6 mb-4 relative">
@@ -223,18 +218,18 @@ export default function MobileProductDetailView({
       </div>
 
       {/* Sticky Bottom Action */}
-      <div className="fixed bottom-16 left-0 right-0 p-6 bg-background/80 backdrop-blur-2xl border-t border-border z-40 pb-safe">
-        <div className="flex gap-4">
-          <button className="w-16 h-16 flex items-center justify-center bg-card border border-border rounded-2xl active:scale-95 transition-transform group">
-             <div className="w-6 h-6 border-2 border-muted-foreground/30 rounded-lg flex items-center justify-center group-hover:border-vizhu-purple transition-colors">
-               <div className="w-1 h-1 bg-muted-foreground/30 rounded-full group-hover:bg-vizhu-purple transition-colors" />
+      <div className="fixed bottom-16 left-0 right-0 p-3 bg-background/80 backdrop-blur-2xl border-t border-border z-40 pb-safe">
+        <div className="flex gap-2">
+          <button className="w-11 h-11 flex items-center justify-center bg-card border border-border rounded-lg active:scale-95 transition-transform group shrink-0">
+             <div className="w-4 h-4 border-2 border-muted-foreground/30 rounded flex items-center justify-center group-hover:border-vizhu-purple transition-colors text-[7px] font-bold">
+               360°
              </div>
           </button>
           <button
             onClick={onAddToCart}
             disabled={!product.inStock}
             className={cn(
-              "flex-1 h-16 rounded-2xl flex items-center justify-center text-base font-bold uppercase tracking-widest transition-all transform active:scale-95 shadow-xl px-4",
+              "flex-1 h-11 rounded-lg flex items-center justify-center text-[12px] font-bold uppercase tracking-widest transition-all transform active:scale-95 shadow-md px-4",
               !product.inStock
                 ? "bg-muted text-muted-foreground"
                 : addedToCart 
