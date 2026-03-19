@@ -77,8 +77,16 @@ export default function MobileCartView({
                 </div>
 
                 <div className="flex-1 bg-card rounded-4xl p-6 flex gap-6 border border-border/50 shadow-sm relative overflow-hidden active:scale-[0.98] transition-transform">
-                   <div className="w-24 h-24 bg-secondary/50 rounded-3xl flex items-center justify-center p-4">
-                      <div className="text-5xl">👓</div>
+                   <div className="w-24 h-24 bg-secondary/50 rounded-3xl flex items-center justify-center p-4 overflow-hidden relative">
+                      {item.selectedColor?.image || item.product.images?.[0] ? (
+                        <img 
+                          src={item.selectedColor?.image || item.product.images?.[0]} 
+                          alt={item.product.name}
+                          className="w-full h-full object-contain"
+                        />
+                      ) : (
+                        <div className="text-5xl">{item.product.category === 'sunglasses' ? '🕶️' : '👓'}</div>
+                      )}
                    </div>
                    
                    <div className="flex-1 min-w-0">
