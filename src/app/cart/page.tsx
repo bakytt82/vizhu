@@ -117,12 +117,12 @@ export default function CartPage() {
                     </div>
 
                     {/* Product image */}
-                    <div className="w-32 h-32 bg-secondary/50 rounded-3xl flex items-center justify-center shrink-0 p-4 transition-transform group-hover:scale-105 duration-500 overflow-hidden relative">
+                    <div className="w-32 h-32 bg-secondary/50 rounded-3xl flex items-center justify-center shrink-0 transition-transform group-hover:scale-105 duration-500 overflow-hidden relative">
                       {item.selectedColor?.image || item.product.images?.[0] ? (
                         <img 
                           src={item.selectedColor?.image || item.product.images?.[0]} 
                           alt={item.product.name}
-                          className="w-full h-full object-contain"
+                          className="w-full h-full object-cover"
                         />
                       ) : (
                         <div className="text-6xl">{item.product.category === 'sunglasses' ? '🕶️' : '👓'}</div>
