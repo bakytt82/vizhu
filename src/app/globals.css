@@ -169,6 +169,34 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.glass-modern {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+}
+
+.dark .glass-modern {
+  background: rgba(15, 10, 25, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-button {
+  background: rgba(79, 50, 103, 0.15);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(79, 50, 103, 0.2);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  color: #4F3267;
+}
+
+.dark .glass-button {
+  background: rgba(180, 168, 197, 0.1);
+  border: 1px solid rgba(180, 168, 197, 0.2);
+  color: #b4a8c5;
+}
+
 .dark .glass {
   background: rgba(30, 20, 48, 0.85);
 }

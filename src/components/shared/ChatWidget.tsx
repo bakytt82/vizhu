@@ -251,14 +251,20 @@ export default function ChatWidget() {
       <AnimatePresence>
         {!isOpen && (
           <motion.button
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0, opacity: 0 }}
+            initial={{ scale: 0, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0, opacity: 0, y: 20 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={toggleOpen}
-            className="fixed bottom-56 right-4 lg:bottom-8 lg:right-8 z-50 w-14 h-14 rounded-full bg-vizhu-purple text-white shadow-2xl shadow-vizhu-purple/30 flex items-center justify-center hover:scale-110 active:scale-95 transition-transform"
+            className="fixed bottom-32 right-4 lg:bottom-10 lg:right-10 z-50 group"
           >
-            <MessageCircle size={24} />
-            <span className="absolute -top-1 -right-1 w-3 h-3 bg-vizhu-orange rounded-full animate-pulse" />
+            <div className="relative flex items-center justify-center w-14 h-14 rounded-2xl glass-button overflow-hidden">
+               <div className="absolute inset-0 bg-vizhu-purple/5 group-hover:bg-vizhu-purple/10 transition-colors" />
+               <Sparkles size={24} className="relative z-10 animate-pulse" />
+               <div className="absolute -inset-1 bg-gradient-to-tr from-vizhu-purple/20 to-vizhu-orange/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+            </div>
+            <span className="absolute -top-1 -right-1 w-3 h-3 bg-vizhu-orange rounded-full shadow-lg border-2 border-background z-20" />
           </motion.button>
         )}
       </AnimatePresence>
@@ -272,35 +278,38 @@ export default function ChatWidget() {
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             className={cn(
-              "fixed z-50 bg-card border border-border/50 shadow-2xl flex flex-col overflow-hidden",
+              "fixed z-50 glass-modern flex flex-col overflow-hidden",
               // Mobile: fullscreen
               "inset-0 rounded-none",
               // Desktop: floating panel
-              "lg:inset-auto lg:bottom-8 lg:right-8 lg:w-[420px] lg:h-[70vh] lg:max-h-[600px] lg:rounded-3xl"
+              "lg:inset-auto lg:bottom-10 lg:right-10 lg:w-[400px] lg:h-[75vh] lg:max-h-[650px] lg:rounded-[32px] lg:shadow-2xl"
             )}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-4 border-b border-border/50 bg-vizhu-purple text-white lg:rounded-t-3xl shrink-0">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center">
-                  <Sparkles size={18} />
+            <div className="flex items-center justify-between px-6 py-5 border-b border-white/5 bg-transparent shrink-0">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 bg-vizhu-purple/10 rounded-2xl flex items-center justify-center border border-vizhu-purple/20">
+                  <Sparkles size={20} className="text-vizhu-purple" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-sm">OptiCare AI</h3>
-                  <p className="text-[10px] text-white/70 uppercase tracking-wider">{t.ai_role_stylist}</p>
+                  <h3 className="font-serif font-medium text-base">OptiCare AI</h3>
+                  <div className="flex items-center gap-1.5">
+                     <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                     <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">{t.ai_role_stylist}</p>
+                  </div>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
                 <Link
                   href="/assistant"
                   onClick={() => setOpen(false)}
-                  className="p-2 hover:bg-white/10 rounded-full transition-colors"
+                  className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-xl transition-colors text-muted-foreground"
                   title="Открыть на весь экран"
                 >
-                  <Maximize2 size={16} />
+                  <Maximize2 size={18} />
                 </Link>
-                <button onClick={toggleOpen} className="p-2 hover:bg-white/10 rounded-full transition-colors">
-                  <X size={16} />
+                <button onClick={toggleOpen} className="p-2 hover:bg-black/5 dark:hover:bg-white/5 rounded-xl transition-colors text-muted-foreground">
+                  <X size={18} />
                 </button>
               </div>
             </div>
@@ -318,10 +327,10 @@ export default function ChatWidget() {
                     </div>
                   )}
                   <div className={cn(
-                    'max-w-[85%] rounded-2xl px-4 py-3 text-[13px] leading-relaxed',
+                    'max-w-[85%] rounded-[24px] px-5 py-4 text-[13px] leading-relaxed shadow-sm',
                     msg.role === 'user'
-                      ? 'bg-vizhu-purple text-white rounded-br-sm'
-                      : 'bg-muted text-foreground rounded-bl-sm',
+                      ? 'bg-vizhu-purple text-white rounded-br-none'
+                      : 'bg-secondary/40 backdrop-blur-sm text-foreground rounded-bl-none border border-border/20',
                     msg.role === 'assistant' && !msg.content && !msg.imageUrl && !msg.actions && "hidden"
                   )}>
                     {msg.imageUrl && (
