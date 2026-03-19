@@ -194,9 +194,9 @@ export default function Header() {
               href={SITE_CONFIG.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-3 py-4 px-6 bg-white text-black text-[10px] uppercase tracking-[0.2em] font-bold hover:bg-transparent hover:text-white border border-white transition-all"
+              className="flex items-center justify-center gap-2 py-3 px-6 bg-white text-black text-[10px] uppercase tracking-[0.2em] font-bold rounded-xl hover:bg-transparent hover:text-white border border-white transition-all shadow-lg"
             >
-              <MessageCircle size={16} strokeWidth={1} />
+              <MessageCircle size={14} strokeWidth={2} />
               WhatsApp
             </a>
             <div className="mt-8">
