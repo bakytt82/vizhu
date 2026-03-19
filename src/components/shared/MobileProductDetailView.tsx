@@ -223,7 +223,7 @@ export default function MobileProductDetailView({
       </div>
 
       {/* Sticky Bottom Action */}
-      <div className="fixed bottom-0 left-0 right-0 p-6 bg-background/80 backdrop-blur-2xl border-t border-border z-40">
+      <div className="fixed bottom-16 left-0 right-0 p-6 bg-background/80 backdrop-blur-2xl border-t border-border z-40 pb-safe">
         <div className="flex gap-4">
           <button className="w-16 h-16 flex items-center justify-center bg-card border border-border rounded-2xl active:scale-95 transition-transform group">
              <div className="w-6 h-6 border-2 border-muted-foreground/30 rounded-lg flex items-center justify-center group-hover:border-vizhu-purple transition-colors">

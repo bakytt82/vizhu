@@ -262,7 +262,7 @@ export default function ChatWidget() {
             <div className="relative flex items-center justify-center w-14 h-14 rounded-2xl glass-button overflow-hidden">
                <div className="absolute inset-0 bg-vizhu-purple/5 group-hover:bg-vizhu-purple/10 transition-colors" />
                <Sparkles size={24} className="relative z-10 animate-pulse" />
-               <div className="absolute -inset-1 bg-gradient-to-tr from-vizhu-purple/20 to-vizhu-orange/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+               <div className="absolute -inset-1 bg-linear-to-tr from-vizhu-purple/20 to-vizhu-orange/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
             <span className="absolute -top-1 -right-1 w-3 h-3 bg-vizhu-orange rounded-full shadow-lg border-2 border-background z-20" />
           </motion.button>
@@ -327,7 +327,7 @@ export default function ChatWidget() {
                     </div>
                   )}
                   <div className={cn(
-                    'max-w-[85%] rounded-[24px] px-5 py-4 text-[13px] leading-relaxed shadow-sm',
+                    'max-w-[85%] rounded-3xl px-5 py-4 text-[13px] leading-relaxed shadow-sm',
                     msg.role === 'user'
                       ? 'bg-vizhu-purple text-white rounded-br-none'
                       : 'bg-secondary/40 backdrop-blur-sm text-foreground rounded-bl-none border border-border/20',
