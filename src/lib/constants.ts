@@ -28,6 +28,7 @@ export const SITE_CONFIG = {
 export const NAV_LINKS = [
   { href: '/', label: 'Главная', key: 'home' },
   { href: '/catalog', label: 'Каталог', key: 'catalog' },
+  { href: '/lenses', label: 'Линзы', key: 'lenses' },
   { href: '/quiz', label: 'Найти свою оправу', key: 'quiz' },
   { href: '/services', label: 'Услуги', key: 'services' },
   { href: '/about', label: 'О нас', key: 'about' },
@@ -54,6 +55,11 @@ export const CATEGORIES = [
     slug: 'sports', 
     label: { ru: 'Спортивные', kg: 'Спортук', en: 'Sports' }, 
     icon: '🏃' 
+  },
+  { 
+    slug: 'lenses', 
+    label: { ru: 'Линзы', kg: 'Линзалар', en: 'Lenses' }, 
+    icon: '🔍' 
   },
 ];
 

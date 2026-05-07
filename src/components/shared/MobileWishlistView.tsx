@@ -2,7 +2,8 @@
 
 import { ChevronLeft, ShoppingBag, Trash2, ShoppingCart } from 'lucide-react';
 import { Product } from '@/types';
-import { formatPrice, cn } from '@/lib/utils';
+import { formatPrice } from '@/lib/utils';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useLanguageStore } from '@/stores/languageStore';
 import { translations } from '@/lib/translations';
@@ -65,9 +66,9 @@ export default function MobileWishlistView({
           <div className="grid grid-cols-1 gap-4">
             {items.map((product) => (
               <div key={product.id} className="bg-card rounded-4xl p-4 flex gap-4 border border-border/50 shadow-sm relative overflow-hidden active:scale-[0.98] transition-transform">
-                <Link href={`/catalog/${product.slug}`} className="w-24 h-24 bg-secondary/50 rounded-3xl flex items-center justify-center p-3 shrink-0">
+                <Link href={`/catalog/${product.slug}`} className="w-24 h-24 bg-secondary/50 rounded-3xl flex items-center justify-center p-3 shrink-0 relative">
                    {product.images?.[0] ? (
-                     <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover rounded-xl" />
+                     <Image src={product.images[0]} alt={product.name} fill className="object-cover rounded-xl" />
                    ) : (
                      <div className="text-4xl">👓</div>
                    )}

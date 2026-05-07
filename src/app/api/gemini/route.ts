@@ -9,10 +9,25 @@ export async function GET() {
   try {
     const apiKey = process.env.AI_STUDIO_API_KEY || process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || '';
     const ai = new GoogleGenAI({ apiKey });
-    const response = await ai.models.list();
-    const models = [];
-    for await (const m of response) {
-      models.push(m.name);
+    let models = [];
+    try {
+      // @ts-ignore
+      const response = await ai.models.list();
+      for await (const m of response) {
+        models.push(m.name);
+      }
+    } catch (innerErr) {
+      console.warn("ai.models.list() failed, trying listModels()");
+      try {
+        // @ts-ignore
+        const response = await ai.models.listModels();
+        for await (const m of response) {
+          models.push(m.name);
+        }
+      } catch (innerErr2) {
+        console.warn("Both list() and listModels() failed, returning static list.");
+        models = ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-2.0-flash-exp', 'gemini-3-flash-preview'];
+      }
     }
     return NextResponse.json({ models });
   } catch (e: any) {

@@ -8,18 +8,20 @@ export interface Product {
   discount?: number;
   description: string | { ru: string; kg: string; en: string };
   shortDescription: string | { ru: string; kg: string; en: string };
-  category: 'eyeglasses' | 'sunglasses' | 'computer' | 'sports';
+  category: 'eyeglasses' | 'sunglasses' | 'computer' | 'sports' | 'lenses';
   gender: 'men' | 'women' | 'unisex';
-  material: 'metal' | 'acetate' | 'titanium' | 'combination' | 'TR90';
-  shape: 'round' | 'square' | 'cat-eye' | 'aviator' | 'rectangle' | 'oval' | 'wrap';
+  material: 'metal' | 'acetate' | 'titanium' | 'combination' | 'TR90' | 'polycarbonate' | 'high-index' | 'other';
+  shape: 'round' | 'square' | 'cat-eye' | 'aviator' | 'rectangle' | 'oval' | 'wrap' | 'other';
   colors: ProductColor[];
   images: string[];
   rating: number;
   reviewCount: number;
   inStock: boolean;
   isNew?: boolean;
-  isBestseller?: boolean;
   features: (string | { ru: string; kg: string; en: string })[];
+  frame_type?: string;
+  frameType?: string;
+  quantity?: number;
 }
 
 export interface ProductColor {

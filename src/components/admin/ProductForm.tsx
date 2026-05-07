@@ -16,10 +16,12 @@ export default function ProductForm({
   initialData = null,
   onComplete,
   onCancel,
+  defaultCategory = 'eyeglasses',
 }: {
   initialData?: any;
   onComplete: () => void;
   onCancel: () => void;
+  defaultCategory?: string;
 }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -28,7 +30,7 @@ export default function ProductForm({
   const [name, setName] = useState(initialData?.name || '');
   const [brand, setBrand] = useState(initialData?.brand || '');
   const [price, setPrice] = useState(initialData?.price?.toString() || '');
-  const [category, setCategory] = useState(initialData?.category || 'eyeglasses');
+  const [category, setCategory] = useState(initialData?.category || defaultCategory);
   const [description, setDescription] = useState(initialData?.description || '');
   const [shape, setShape] = useState(initialData?.shape || 'Квадратная');
   const [material, setMaterial] = useState(initialData?.material || 'Пластик');
@@ -127,17 +129,33 @@ export default function ProductForm({
           : `product-${Date.now()}`),
       };
 
+      const table = category === 'lenses' ? 'lenses' : 'products';
+      const oldTable = initialData?.category === 'lenses' ? 'lenses' : 'products';
+
       if (initialData?.id) {
-        // Update
-        const { error: updateError } = await supabase
-          .from('products')
-          .update(productData)
-          .eq('id', initialData.id);
-        if (updateError) throw updateError;
+        // If category changed from/to lenses, we need to delete from old table and insert to new
+        if (table !== oldTable) {
+           // Insert new
+           const { error: insertError } = await supabase.from(table).insert([productData]);
+           if (insertError) throw insertError;
+           
+           // Delete old
+           const { error: deleteError } = await supabase.from(oldTable).delete().eq('id', initialData.id);
+           if (deleteError) {
+             console.error('Warning: could not delete old entry:', deleteError);
+           }
+        } else {
+           // Update in same table
+           const { error: updateError } = await supabase
+             .from(table)
+             .update(productData)
+             .eq('id', initialData.id);
+           if (updateError) throw updateError;
+        }
       } else {
         // Insert
         const { error: insertError } = await supabase
-          .from('products')
+          .from(table)
           .insert([productData]);
         if (insertError) throw insertError;
       }
@@ -208,10 +226,11 @@ export default function ProductForm({
               onChange={(e) => setCategory(e.target.value)}
               className="w-full bg-muted border-0 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-vizhu-purple/20"
             >
-              <option value="eyeglasses">Очки для зрения</option>
+               <option value="eyeglasses">Очки для зрения</option>
               <option value="sunglasses">Солнцезащитные очки</option>
               <option value="computer">Компьютерные очки</option>
               <option value="sports">Спортивные очки</option>
+              <option value="lenses">Контактные линзы</option>
             </select>
           </div>
           <div className="space-y-2">

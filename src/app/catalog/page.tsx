@@ -12,7 +12,7 @@ import { CATEGORIES } from '@/lib/constants';
 import { useLanguageStore } from '@/stores/languageStore';
 import { useWishlistStore } from '@/stores/wishlistStore';
 import { translations } from '@/lib/translations';
-import ProductWatermark from '@/components/shared/ProductWatermark';
+import ProductCard from '@/components/shared/ProductCard';
 
 export default function CatalogPage() {
   const { language } = useLanguageStore();
@@ -33,7 +33,14 @@ export default function CatalogPage() {
 
   const filtered = products
     .filter((p) => {
-      if (category !== 'all' && p.category !== category) return false;
+      // Category filter
+      if (category === 'all') {
+        if (p.category === 'lenses') return false;
+      } else {
+        if (p.category !== category) return false;
+      }
+
+      // Search filter
       if (search && !p.name.toLowerCase().includes(search.toLowerCase()) && 
           !p.brand.toLowerCase().includes(search.toLowerCase())) return false;
       return true;
@@ -119,92 +126,7 @@ export default function CatalogPage() {
         {/* Product grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
           {filtered.map((product) => (
-            <Link
-              key={product.id}
-              href={`/catalog/${product.slug}`}
-              className="group card-hover"
-            >
-              <div className="bg-card rounded-[32px] overflow-hidden border border-border/50 hover:border-vizhu-purple/30 transition-all">
-                <div className="relative aspect-square bg-secondary/50 overflow-hidden">
-                  {product.images?.[0] ? (
-                    <img 
-                      src={product.images[0]} 
-                      alt={product.name} 
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" 
-                    />
-                  ) : (
-                    <div className="flex items-center justify-center w-full h-full text-7xl">👓</div>
-                  )}
-                  
-                  <ProductWatermark size="sm" className="top-3 left-3" />
-                  
-                  <div className="absolute top-14 left-3 flex flex-col gap-1.5 z-10">
-                    {product.discount && (
-                      <Badge variant="destructive" className="text-[10px] font-bold px-2 py-0.5 uppercase tracking-tighter">
-                        -{product.discount}%
-                      </Badge>
-                    )}
-                    {product.isNew && (
-                      <Badge variant="orange" className="text-[10px] font-bold px-2 py-0.5 uppercase tracking-tighter">
-                        {t.catalog_new}
-                      </Badge>
-                    )}
-                    {product.isBestseller && (
-                      <Badge variant="purple" className="text-[10px] font-bold px-2 py-0.5 uppercase tracking-tighter">
-                        {t.catalog_hit}
-                      </Badge>
-                    )}
-                  </div>
-
-                  {/* Actions (always visible on small screens, on hover for desktop) */}
-                  <div className="absolute bottom-4 right-4 flex gap-2 lg:opacity-0 lg:group-hover:opacity-100 transition-all lg:translate-y-2 lg:group-hover:translate-y-0 z-20">
-                    <button
-                       onClick={(e) => { 
-                         e.preventDefault(); 
-                         toggleWishlist(product);
-                       }}
-                       className="w-10 h-10 bg-white dark:bg-card/80 backdrop-blur-md rounded-xl flex items-center justify-center hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors border border-border shadow-lg"
-                     >
-                       <Heart 
-                         size={16} 
-                         className={cn(
-                           "transition-colors",
-                           isInWishlist(product.id) ? "fill-rose-500 text-rose-500" : "text-muted-foreground hover:text-rose-500"
-                         )} 
-                       />
-                     </button>
-                  </div>
-                </div>
-
-                <div className="p-5">
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold mb-1">
-                    {product.brand}
-                  </p>
-                  <h3 className="font-medium text-sm sm:text-base mb-2 line-clamp-2 group-hover:text-vizhu-purple transition-colors h-10 sm:h-12">
-                    {product.name}
-                  </h3>
-
-                  <div className="flex items-center gap-1 mb-2">
-                    <Star size={12} className="fill-vizhu-orange text-vizhu-orange" />
-                    <span className="text-xs font-bold">{product.rating}</span>
-                    <span className="text-xs text-muted-foreground">
-                      · {product.reviewCount} {t.reviewsCount}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <span className="font-display font-bold text-lg text-vizhu-orange">
-                      {formatPrice(product.price, t.som)}
-                    </span>
-                    {product.oldPrice && (
-                      <span className="text-xs text-muted-foreground line-through opacity-60">
-                        {formatPrice(product.oldPrice, t.som)}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </Link>
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
 

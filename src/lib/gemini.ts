@@ -1,6 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
 import { getProducts } from './db';
-import { Product } from '@/types';
 
 const getAI = () => {
   const apiKey = process.env.API_KEY || process.env.AI_STUDIO_API_KEY || process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
@@ -32,13 +31,18 @@ ${productContext}
 CRITICAL INSTRUCTION: You MUST communicate with the user entirely in the language corresponding to this language code: '${language}' (e.g. 'ru' for Russian, 'en' for English, 'kg' for Kyrgyz language). Do not use any other language.`;
 }
 
-export const TOOLS: any = [];
+export const TOOLS: never[] = [];
 
-export async function chatWithGemini(userMessage: string, history: { role: string; content: string }[], language: string = 'ru') {
+export interface GeminiHistoryItem {
+  role: 'user' | 'assistant' | 'model';
+  content: string;
+}
+
+export async function chatWithGemini(userMessage: string, history: GeminiHistoryItem[], language: string = 'ru') {
   try {
     const productContext = await getCurrentProductContext();
     const chat = getAI().chats.create({
-      model: 'gemini-2.5-flash',
+      model: process.env.NEXT_PUBLIC_GEMINI_MODEL || 'gemini-2.5-flash',
       config: {
         systemInstruction: getSystemPrompt(language, productContext),
         maxOutputTokens: 1024,
@@ -46,7 +50,7 @@ export async function chatWithGemini(userMessage: string, history: { role: strin
         tools: TOOLS,
       },
       history: history.map((msg) => ({
-        role: msg.role === 'user' ? 'user' : ('model' as any),
+        role: msg.role === 'user' ? 'user' : 'model',
         parts: [{ text: msg.content }],
       })),
     });
@@ -56,17 +60,17 @@ export async function chatWithGemini(userMessage: string, history: { role: strin
     });
 
     return response.text || 'Извините, не удалось получить ответ.';
-  } catch (error: any) {
+  } catch (error) {
     console.error('Gemini API error:', error);
     throw new Error('Ошибка при обращении к ИИ-ассистенту');
   }
 }
 
-export async function chatWithGeminiStream(userMessage: string, history: { role: string; content: string }[], language: string = 'ru') {
+export async function chatWithGeminiStream(userMessage: string, history: GeminiHistoryItem[], language: string = 'ru') {
   try {
     const productContext = await getCurrentProductContext();
     const chat = getAI().chats.create({
-      model: 'gemini-2.5-flash',
+      model: process.env.NEXT_PUBLIC_GEMINI_MODEL || 'gemini-2.5-flash',
       config: {
         systemInstruction: getSystemPrompt(language, productContext),
         maxOutputTokens: 1024,
@@ -74,7 +78,7 @@ export async function chatWithGeminiStream(userMessage: string, history: { role:
         tools: TOOLS,
       },
       history: history.map((msg) => ({
-        role: msg.role === 'user' ? 'user' : ('model' as any),
+        role: msg.role === 'user' ? 'user' : 'model',
         parts: [{ text: msg.content }],
       })),
     });
@@ -82,9 +86,10 @@ export async function chatWithGeminiStream(userMessage: string, history: { role:
     return await chat.sendMessageStream({
       message: userMessage,
     });
-  } catch (error: any) {
+  } catch (error) {
     console.error('Gemini Streaming API error:', error);
-    throw new Error('Ошибка при обращении к ИИ-ассистенту (Stream): ' + (error?.message || String(error)));
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error('Ошибка при обращении к ИИ-ассистенту (Stream): ' + message);
   }
 }
 
@@ -98,14 +103,14 @@ export async function chatWithGeminiVision(
   try {
     const productContext = await getCurrentProductContext();
     const chat = getAI().chats.create({
-      model: 'gemini-2.5-flash',
+      model: process.env.NEXT_PUBLIC_GEMINI_MODEL || 'gemini-2.5-flash',
       config: {
         systemInstruction: getSystemPrompt(language, productContext),
         maxOutputTokens: 1500,
         temperature: 0.7,
       },
       history: history.map((msg) => ({
-        role: msg.role === 'user' ? 'user' : ('model' as any),
+        role: msg.role === 'user' ? 'user' : 'model',
         parts: [{ text: msg.content }],
       })),
     });
@@ -128,7 +133,7 @@ export async function parsePrescription(imageBase64: string, mimeType: string) {
   try {
     const prompt = 'Проанализируй фото рецепта. Верни JSON с полями od, os (sphere, cylinder, axis, add) и pd.';
     const chat = getAI().chats.create({
-      model: 'gemini-2.5-flash',
+      model: process.env.NEXT_PUBLIC_GEMINI_MODEL || 'gemini-2.5-flash',
       config: { maxOutputTokens: 512, temperature: 0.2 },
     });
 
@@ -153,7 +158,7 @@ export async function getQuizRecommendations(answers: Record<string, string>) {
     const productContext = await getCurrentProductContext();
     const prompt = `Подбери 3-5 оправ. Параметры: ${JSON.stringify(answers)}. Ассортимент: ${productContext}`;
     const chat = getAI().chats.create({
-      model: 'gemini-2.5-flash',
+      model: process.env.NEXT_PUBLIC_GEMINI_MODEL || 'gemini-2.5-flash',
       config: {
         systemInstruction: 'Ты — эксперт-оптик. Помоги подобрать очки.',
         maxOutputTokens: 1024,
@@ -166,5 +171,73 @@ export async function getQuizRecommendations(answers: Record<string, string>) {
   } catch (error) {
     console.error('Quiz recommendations error:', error);
     throw new Error('Ошибка при получении рекомендаций');
+  }
+}
+
+/**
+ * Virtual Try-On using @google/genai SDK with gemini-3.1-flash-image-preview.
+ * Single model, no fallback chain — fast and reliable.
+ */
+export async function virtualTryOn(selfieBase64: string, frameBase64: string, frameMimeType: string = 'image/jpeg') {
+  const modelName = process.env.NEXT_PUBLIC_GEMINI_MODEL_TRYON || 'gemini-3.1-flash-image-preview';
+  console.log(`[Try-On] Using model: ${modelName}`);
+
+  const prompt = "На первом фото — лицо человека (селфи). На втором фото — оправа очков. " +
+    "Надень эти ТОЧНЫЕ очки на лицо этого человека. " +
+    "Результат должен быть ОДНИМ фотореалистичным изображением человека в этих очках. " +
+    "Масштаб и положение очков должны идеально соответствовать форме лица.";
+
+  try {
+    const ai = getAI();
+
+    const response = await ai.models.generateContent({
+      model: modelName,
+      contents: [
+        { inlineData: { mimeType: 'image/jpeg', data: selfieBase64 } },
+        { inlineData: { mimeType: frameMimeType, data: frameBase64 } },
+        { text: prompt },
+      ],
+    });
+
+    // Extract generated image from response
+    const parts = response.candidates?.[0]?.content?.parts || [];
+    const imagePart = parts.find((p) => 'inlineData' in p && p.inlineData?.data);
+
+    if (imagePart?.inlineData?.data) {
+      console.log(`[Try-On] ✅ SUCCESS! mimeType: ${imagePart.inlineData.mimeType}`);
+      return {
+        image: imagePart.inlineData.data,
+        mimeType: imagePart.inlineData.mimeType || 'image/png'
+      };
+    }
+
+    // Check finish reason
+    const finishReason = response.candidates?.[0]?.finishReason;
+    if (finishReason === 'NO_IMAGE') {
+      throw new Error('Модель не смогла сгенерировать изображение. Попробуйте другое фото.');
+    }
+
+    // Model returned text instead of image
+    const textPart = parts.find((p) => 'text' in p && p.text);
+    console.warn('[Try-On] Model returned text instead of image:', textPart?.text?.substring(0, 200));
+    throw new Error('Модель вернула текст вместо изображения. Попробуйте ещё раз.');
+
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.error('[Try-On] Error:', message);
+    
+    if (message.includes('429') || message.includes('quota') || message.includes('RESOURCE_EXHAUSTED')) {
+      throw new Error('Превышен лимит запросов к API. Попробуйте через минуту.');
+    }
+    if (message.includes('high demand')) {
+      throw new Error('Сервер перегружен. Попробуйте через 30 секунд.');
+    }
+    
+    // Re-throw if it's already our error
+    if (message.startsWith('Модель') || message.startsWith('Превышен') || message.startsWith('Сервер')) {
+      throw error;
+    }
+    
+    throw new Error('Не удалось сгенерировать примерку. Попробуйте другое фото или повторите позже.');
   }
 }

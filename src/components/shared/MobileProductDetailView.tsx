@@ -1,6 +1,7 @@
 'use client';
 
-import { ChevronLeft, ShoppingBag, Share2, Eye, Heart, Star, MessageSquare, Check, Wand2 } from 'lucide-react';
+import { ChevronLeft, ShoppingBag, Heart, Star, MessageSquare, Check } from 'lucide-react';
+import Image from 'next/image';
 import { Product } from '@/types';
 import { formatPrice, cn, getLangText } from '@/lib/utils';
 import { useState } from 'react';
@@ -8,7 +9,6 @@ import Link from 'next/link';
 import { useLanguageStore } from '@/stores/languageStore';
 import { useWishlistStore } from '@/stores/wishlistStore';
 import { translations } from '@/lib/translations';
-import { useAssistantStore } from '@/stores/assistantStore';
 import ProductWatermark from '@/components/shared/ProductWatermark';
 
 interface MobileProductDetailViewProps {
@@ -63,10 +63,11 @@ export default function MobileProductDetailView({
           >
             {product.images.map((img, i) => (
               <div key={i} className="w-full h-full shrink-0 snap-center flex items-center justify-center relative">
-                <img
+                <Image
                   src={img}
                   alt={`${product.name} ${i}`}
-                  className="w-full h-full object-cover transition-transform duration-500"
+                  fill
+                  className="object-cover transition-transform duration-500"
                 />
               </div>
             ))}
@@ -107,7 +108,7 @@ export default function MobileProductDetailView({
               i === activeImageIndex ? "bg-secondary border-vizhu-purple/30" : "bg-transparent border-border/50"
             )}
           >
-            <img src={img} alt="" className="w-full h-full object-cover opacity-60" />
+            <Image src={img} alt="" width={80} height={64} className="w-full h-full object-cover opacity-60" />
           </button>
         ))}
       </div>
@@ -209,7 +210,7 @@ export default function MobileProductDetailView({
                           <div className="flex flex-wrap gap-2">
                             {product.features.map((feature, i) => (
                               <span key={i} className="px-3 py-1.5 bg-secondary rounded-xl text-[10px] font-bold uppercase tracking-wider">
-                                {getLangText(feature as any, language)}
+                                {getLangText(feature as string | { ru: string; kg: string; en: string }, language)}
                               </span>
                             ))}
                           </div>

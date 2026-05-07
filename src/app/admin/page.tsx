@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Loader2, LogOut, Plus, Search, Tag, Eye, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import Image from 'next/image';
 import ProductForm from '@/components/admin/ProductForm';
+import { getProducts } from '@/lib/db';
 
 export default function AdminPage() {
   const [session, setSession] = useState<any>(null);
@@ -16,8 +16,10 @@ export default function AdminPage() {
 
   // Dashboard State
   const [products, setProducts] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState<'frames' | 'lenses'>('frames');
   const [isEditing, setIsEditing] = useState(false);
   const [currentProduct, setCurrentProduct] = useState<any>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -37,17 +39,20 @@ export default function AdminPage() {
   }, []);
 
   const fetchProducts = async () => {
-    const { data } = await supabase.from('products').select('*').order('created_at', { ascending: false });
+    const data = await getProducts();
     if (data) setProducts(data);
   };
 
-  const handleDelete = async (id: string, name: string) => {
-    if (!window.confirm(`Вы уверены, что хотите удалить товар "${name}"? Это действие необратимо.`)) return;
+  const handleDelete = async (product: any) => {
+    if (!window.confirm(`Вы уверены, что хотите удалить товар "${product.name}"? Это действие необратимо.`)) return;
     
-    const { error } = await supabase.from('products').delete().eq('id', id);
+    const table = product.category === 'lenses' ? 'lenses' : 'products';
+    const { error } = await supabase.from(table).delete().eq('id', product.id);
+    
     if (!error) {
       fetchProducts();
     } else {
+      console.error('Delete error:', error);
       alert('Ошибка при удалении товара: ' + error.message);
     }
   };
@@ -128,6 +133,7 @@ export default function AdminPage() {
       <div className="max-w-6xl mx-auto p-4 md:p-8 pt-24 md:pt-32">
         <ProductForm 
           initialData={currentProduct}
+          defaultCategory={activeTab === 'lenses' ? 'lenses' : 'eyeglasses'}
           onCancel={() => {
             setIsEditing(false);
             setCurrentProduct(null);
@@ -142,12 +148,19 @@ export default function AdminPage() {
     );
   }
 
+  const filteredProducts = products.filter(p => {
+    const isCategoryMatch = activeTab === 'lenses' ? p.category === 'lenses' : p.category !== 'lenses';
+    const isSearchMatch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                         p.brand.toLowerCase().includes(searchQuery.toLowerCase());
+    return isCategoryMatch && isSearchMatch;
+  });
+
   return (
     <div className="max-w-6xl mx-auto p-4 md:p-8 pt-24 md:pt-32">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 bg-card p-4 md:p-6 rounded-3xl border border-border/50 shadow-sm">
         <div>
           <h1 className="text-2xl font-bold">Управление каталогом</h1>
-          <p className="text-muted-foreground">Добавляйте, редактируйте и удаляйте оправы</p>
+          <p className="text-muted-foreground">Добавляйте, редактируйте и удаляйте оправы и линзы</p>
         </div>
         <div className="flex items-center gap-3">
           <button 
@@ -170,19 +183,41 @@ export default function AdminPage() {
         </div>
       </header>
 
-      {/* Product List Skeleton for now */}
       <div className="bg-card rounded-3xl border border-border/50 shadow-sm overflow-hidden">
         <div className="p-4 border-b border-border/50 flex flex-col md:flex-row gap-4 items-center justify-between">
-          <div className="relative w-full md:w-96">
+          <div className="flex items-center gap-1 bg-muted p-1 rounded-xl">
+            <button
+              onClick={() => setActiveTab('frames')}
+              className={cn(
+                "px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all",
+                activeTab === 'frames' ? "bg-card text-vizhu-purple shadow-sm" : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              Оправы
+            </button>
+            <button
+              onClick={() => setActiveTab('lenses')}
+              className={cn(
+                "px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-all",
+                activeTab === 'lenses' ? "bg-card text-vizhu-purple shadow-sm" : "text-muted-foreground hover:text-foreground"
+              )}
+            >
+              Линзы
+            </button>
+          </div>
+          
+          <div className="relative w-full md:w-64">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
             <input
               type="text"
-              placeholder="Поиск по названию или бренду..."
+              placeholder="Поиск..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 bg-muted rounded-xl border-0 text-sm focus:ring-2 focus:ring-vizhu-purple/20"
             />
           </div>
           <div className="text-sm text-muted-foreground whitespace-nowrap">
-            Всего товаров: {products.length}
+            {activeTab === 'frames' ? 'Оправ' : 'Линз'}: {filteredProducts.length}
           </div>
         </div>
 
@@ -201,14 +236,14 @@ export default function AdminPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border/50">
-              {products.length === 0 ? (
+              {filteredProducts.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-6 py-12 text-center text-muted-foreground">
-                    Нет добавленных товаров
+                  <td colSpan={8} className="px-6 py-12 text-center text-muted-foreground font-medium">
+                    {searchQuery ? 'Ничего не найдено по вашему запросу' : 'В этой категории пока нет товаров'}
                   </td>
                 </tr>
               ) : (
-                products.map((p) => (
+                filteredProducts.map((p) => (
                   <tr key={p.id} className="hover:bg-muted/30 transition-colors border-b border-border/10 last:border-0">
                     <td className="sticky left-0 z-10 bg-card px-6 py-4 border-r border-border/10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.05)]">
                       <div className="w-16 h-16 bg-secondary rounded-2xl relative overflow-hidden shrink-0 shadow-sm border border-border/20">
@@ -277,7 +312,7 @@ export default function AdminPage() {
                           <span className="text-[10px] font-bold uppercase tracking-wider px-1">Редактировать</span>
                         </button>
                         <button 
-                          onClick={() => handleDelete(p.id, p.name)}
+                          onClick={() => handleDelete(p)}
                           className="bg-card hover:bg-red-50 text-red-500 p-2 rounded-xl border border-border/50 transition-all shadow-sm hover:scale-105 active:scale-95"
                           title="Удалить"
                         >
@@ -291,7 +326,6 @@ export default function AdminPage() {
             </tbody>
           </table>
         </div>
-
       </div>
     </div>
   );

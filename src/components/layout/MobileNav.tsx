@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Search, Sparkles, ShoppingBag, MapPin } from 'lucide-react';
+import { Home, Search, Sparkles, ShoppingBag, MapPin, Eye } from 'lucide-react';
 import { useCartStore } from '@/stores/cartStore';
 import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
@@ -12,6 +12,7 @@ import { translations } from '@/lib/translations';
 const navItems = [
   { href: '/', key: 'home', icon: Home },
   { href: '/catalog', key: 'catalog', icon: Search },
+  { href: '/lenses', key: 'lenses', icon: Eye },
   { href: '/quiz', key: 'quiz', icon: Sparkles },
   { href: '/cart', key: 'cart', icon: ShoppingBag },
   { href: '/contacts', key: 'contacts', icon: MapPin },

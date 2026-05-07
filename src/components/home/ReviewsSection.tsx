@@ -4,7 +4,7 @@ import { Star, Quote } from 'lucide-react';
 import { reviews } from '@/data/products';
 import { useLanguageStore } from '@/stores/languageStore';
 import { translations } from '@/lib/translations';
-import { getLangText } from '@/lib/utils';
+import { getLangText, cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 
 export default function ReviewsSection() {
@@ -64,7 +64,7 @@ export default function ReviewsSection() {
               </div>
 
               <p className="text-lg leading-relaxed text-foreground/80 mb-8 font-light italic">
-                &ldquo;{getLangText(review.text as any, language)}&rdquo;
+                &ldquo;{getLangText(review.text as string | { ru: string; kg: string; en: string }, language)}&rdquo;
               </p>
 
               <div className="flex items-center gap-4 pt-8 border-t border-border/50">
@@ -124,4 +124,3 @@ export default function ReviewsSection() {
   );
 }
 
-import { cn } from '@/lib/utils';

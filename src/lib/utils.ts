@@ -26,5 +26,6 @@ export function generateStars(rating: number): string[] {
 export function getLangText(text: string | { ru: string; kg: string; en: string } | undefined, lang: string): string {
   if (!text) return '';
   if (typeof text === 'string') return text;
-  return (text as any)[lang] || (text as any)['ru'] || '';
+  const typedText = text as Record<string, string>;
+  return typedText[lang] || typedText['ru'] || '';
 }

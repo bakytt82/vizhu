@@ -1,5 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
 import { getProducts } from '../lib/db';
+import { GeminiHistoryItem } from '../lib/gemini';
 
 const getAI = () => {
   const apiKey = process.env.API_KEY || process.env.AI_STUDIO_API_KEY || process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
@@ -27,16 +28,16 @@ ${productContext}
 Instruction: Speak ONLY in the requested language: '${language}'.`;
 }
 
-export const TOOLS: any = [];
+export const TOOLS: never[] = [];
 
-export async function chatWithGemini(userMessage: string, history: any[] = [], language: string = 'ru') {
+export async function chatWithGemini(userMessage: string, history: GeminiHistoryItem[] = [], language: string = 'ru') {
   try {
     const productContext = await getCurrentProductContext();
     const ai = getAI();
     
     // Using gemini-2.5-flash for stability and "thinking" capabilities
     const chat = ai.chats.create({
-      model: 'gemini-2.5-flash',
+      model: process.env.NEXT_PUBLIC_GEMINI_MODEL || 'gemini-2.5-flash',
       config: {
         systemInstruction: getSystemPrompt(language, productContext),
         maxOutputTokens: 1024,
@@ -54,7 +55,7 @@ export async function chatWithGemini(userMessage: string, history: any[] = [], l
     });
 
     return result.text || 'Извините, не удалось получить ответ.';
-  } catch (error: any) {
+  } catch (error) {
     console.error('Gemini Service Error:', error);
     throw new Error('Ошибка при обращении к ИИ-ассистенту (Gemini 3)');
   }

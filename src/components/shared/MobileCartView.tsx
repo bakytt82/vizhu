@@ -1,6 +1,7 @@
 'use client';
 
-import { ChevronLeft, ShoppingBag, Heart, Minus, Plus, Trash2 } from 'lucide-react';
+import { ChevronLeft, ShoppingBag, Minus, Plus, Trash2 } from 'lucide-react';
+import Image from 'next/image';
 import { CartItem } from '@/types';
 import { formatPrice, cn, getLangText } from '@/lib/utils';
 import Link from 'next/link';
@@ -79,10 +80,11 @@ export default function MobileCartView({
                 <div className="flex-1 bg-card rounded-4xl p-6 flex gap-6 border border-border/50 shadow-sm relative overflow-hidden active:scale-[0.98] transition-transform">
                    <div className="w-24 h-24 bg-secondary/50 rounded-3xl flex items-center justify-center overflow-hidden relative">
                       {item.selectedColor?.image || item.product.images?.[0] ? (
-                        <img 
+                        <Image 
                           src={item.selectedColor?.image || item.product.images?.[0]} 
                           alt={item.product.name}
-                          className="w-full h-full object-cover"
+                          fill
+                          className="object-cover"
                         />
                       ) : (
                         <div className="text-5xl">{item.product.category === 'sunglasses' ? '🕶️' : '👓'}</div>
@@ -112,7 +114,7 @@ export default function MobileCartView({
                          {item.selectedColor && (
                            <div className="flex items-center gap-3 text-[9px] text-muted-foreground font-bold uppercase tracking-widest bg-secondary/80 px-3 py-1.5 rounded-full">
                               <div className="w-2 h-2 rounded-full border border-black/5" style={{ backgroundColor: item.selectedColor.hex }} />
-                              {getLangText(item.selectedColor.name as any, language)}
+                              {getLangText(item.selectedColor.name as string | { ru: string; kg: string; en: string }, language)}
                            </div>
                          )}
                          
